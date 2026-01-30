@@ -136,15 +136,55 @@ function setupHeaderScroll() {
 
 function renderPortfolio() {
     const grid = document.getElementById('portfolio-grid');
-    grid.innerHTML = projects.map(project => `
+    grid.innerHTML = projects.map(project => {
+        let mediaContent = '';
+
+        if (project.iconType === 'giydir') {
+            mediaContent = `
+                <div class="project-icon-container">
+                    <div class="icon-giydir">
+                        <div class="t-shirt-shape"><div class="t-shirt-fill"></div></div>
+                        <div class="scanner-line"></div>
+                    </div>
+                </div>
+            `;
+        } else if (project.iconType === 'melodixor') {
+            mediaContent = `
+                <div class="project-icon-container">
+                    <div class="icon-melodixor">
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                    </div>
+                </div>
+            `;
+        } else if (project.iconType === 'weather') {
+            mediaContent = `
+                <div class="project-icon-container">
+                    <div class="icon-weather">
+                        <div class="sun"></div>
+                        <div class="cloud"></div>
+                        <div class="rain-drop"></div>
+                        <div class="rain-drop"></div>
+                        <div class="rain-drop"></div>
+                    </div>
+                </div>
+            `;
+        } else {
+            mediaContent = `<img src="${project.imageUrl}" alt="${project.title}" loading="lazy">`;
+        }
+
+        return `
         <div class="portfolio-card" onclick="showProjectDetail('${project.slug}')">
-            <img src="${project.imageUrl}" alt="${project.title}" loading="lazy">
+            ${mediaContent}
             <div class="portfolio-card-content">
                 <h3>${project.title}</h3>
                 <p class="category">${project.category}</p>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 function showProjectDetail(slug) {
@@ -202,12 +242,105 @@ function showProjectDetail(slug) {
 
 function renderTechStack() {
     const grid = document.getElementById('tech-grid');
-    grid.innerHTML = technologies.map(tech => `
+    grid.innerHTML = technologies.map(tech => {
+        let iconHtml = '';
+
+        switch (tech.iconType) {
+            case 'react-atom':
+                iconHtml = `
+                    <div class="tech-icon-container">
+                        <div class="tech-react">
+                            <div class="react-core"></div>
+                            <div class="react-orbit o1"></div>
+                            <div class="react-orbit o2"></div>
+                            <div class="react-orbit o3"></div>
+                        </div>
+                    </div>`;
+                break;
+            case 'flutter-layers':
+                iconHtml = `
+                    <div class="tech-icon-container">
+                        <div class="tech-flutter">
+                            <div class="layer l1"></div>
+                            <div class="layer l2"></div>
+                            <div class="layer l3"></div>
+                        </div>
+                    </div>`;
+                break;
+            case 'swift-bird':
+                iconHtml = `
+                    <div class="tech-icon-container">
+                        <div class="tech-swift">
+                            <div class="swift-wing"></div>
+                            <div class="swift-body"></div>
+                        </div>
+                    </div>`;
+                break;
+            case 'kotlin-gear':
+                iconHtml = `
+                    <div class="tech-icon-container">
+                        <div class="tech-kotlin">
+                            <div class="gear-tooth"></div>
+                            <div class="gear-tooth"></div>
+                            <div class="gear-tooth"></div>
+                            <div class="gear-tooth"></div>
+                            <div class="gear-core"></div>
+                        </div>
+                    </div>`;
+                break;
+            case 'node-cluster':
+                iconHtml = `
+                    <div class="tech-icon-container">
+                        <div class="tech-node">
+                            <div class="node-center"></div>
+                            <div class="node-sat s1"></div>
+                            <div class="node-sat s2"></div>
+                            <div class="node-sat s3"></div>
+                            <div class="node-track"></div>
+                        </div>
+                    </div>`;
+                break;
+            case 'firebase-cloud':
+                iconHtml = `
+                    <div class="tech-icon-container">
+                        <div class="tech-firebase">
+                            <div class="cloud-base"></div>
+                            <div class="sync-dot d1"></div>
+                            <div class="sync-dot d2"></div>
+                            <div class="sync-arrow"></div>
+                        </div>
+                    </div>`;
+                break;
+            case 'ai-brain':
+                iconHtml = `
+                    <div class="tech-icon-container">
+                        <div class="tech-brain">
+                            <div class="brain-lobe l1"></div>
+                            <div class="brain-lobe l2"></div>
+                            <div class="synapse s1"></div>
+                            <div class="synapse s2"></div>
+                        </div>
+                    </div>`;
+                break;
+            case 'figma-cursor':
+                iconHtml = `
+                    <div class="tech-icon-container">
+                        <div class="tech-figma">
+                            <div class="figma-shape"></div>
+                            <div class="cursor-pointer"></div>
+                        </div>
+                    </div>`;
+                break;
+            default:
+                iconHtml = `<span class="icon">💻</span>`;
+        }
+
+        return `
         <div class="tech-card">
-            <span class="icon">${tech.icon}</span>
+            ${iconHtml}
             <h3>${tech.name}</h3>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 function renderTeam() {
@@ -228,28 +361,178 @@ async function handleAIFormSubmit(e) {
     e.preventDefault();
 
     const projectName = document.getElementById('project-name').value;
-    const techStack = document.getElementById('tech-stack-input').value;
-    const keywords = document.getElementById('keywords').value;
+    const keywords = document.getElementById('keywords').value.toLowerCase();
 
     const output = document.getElementById('ai-output');
+    const btn = document.querySelector('.btn-accent');
     const btnText = document.getElementById('generate-btn-text');
+    const loader = document.getElementById('ai-loader');
+    const logsContainer = document.getElementById('status-logs');
+    const addressBar = document.querySelector('.browser-address');
     const t = translations[currentLang].aiTool;
 
     // Show loading state
-    btnText.textContent = t.generating;
-    output.innerHTML = '<div class="spinner"></div>';
-    output.classList.add('loading');
+    btn.disabled = true;
+    btn.classList.add('generating');
+    btnText.textContent = t.generating || 'Tasarım Yapılıyor...';
+    loader.style.display = 'flex';
+    logsContainer.innerHTML = '';
 
-    // Simulate AI generation (2 seconds delay)
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Initial address bar reset
+    addressBar.textContent = '...';
 
-    // Generate description
-    const description = generateDescription(projectName, techStack, keywords);
+    const logs = [
+        "Analiz ediliyor: " + keywords,
+        "Sektör belirlendi, uygun şablon seçiliyor...",
+        "Adres doğrulanıyor: www." + projectName.toLowerCase().replace(/\s/g, '-') + ".com",
+        "Renk paleti ve tipografi optimize ediliyor...",
+        "Dinamik içerikler enjekte ediliyor...",
+        "Tasarım final haline getiriliyor..."
+    ];
+
+    // Multi-tasking: Address typing + Logs
+    const typeAddressPromise = typeAddress(addressBar, `www.${projectName.toLowerCase().replace(/\s/g, '-')}.com/preview`);
+
+    // Status log simulation
+    for (let log of logs) {
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.textContent = '> ' + log;
+        logsContainer.appendChild(entry);
+        await new Promise(r => setTimeout(r, 600 + Math.random() * 400));
+        logsContainer.scrollTop = logsContainer.scrollHeight;
+    }
+
+    await typeAddressPromise;
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    // Generate Mockup Structure
+    let template = "";
+    if (keywords.includes('emlak') || keywords.includes('real estate')) {
+        template = getRealEstateTemplate(projectName);
+    } else if (keywords.includes('kahve') || keywords.includes('coffee') || keywords.includes('kafe')) {
+        template = getCoffeeTemplate(projectName);
+    } else if (keywords.includes('spor') || keywords.includes('gym') || keywords.includes('antrenman')) {
+        template = getGymTemplate(projectName);
+    } else if (keywords.includes('market') || keywords.includes('ticaret') || keywords.includes('shop')) {
+        template = getEcommerceTemplate(projectName);
+    } else if (keywords.includes('yemek') || keywords.includes('restoran') || keywords.includes('restaurant')) {
+        template = getRestaurantTemplate(projectName);
+    } else if (keywords.includes('portfolyo') || keywords.includes('portfolio') || keywords.includes('kişisel')) {
+        template = getPortfolioTemplate(projectName);
+    } else {
+        template = getDefaultTemplate(projectName);
+    }
 
     // Show result
-    output.classList.remove('loading');
-    output.innerHTML = `<p>${description}</p>`;
+    loader.style.display = 'none';
+    output.innerHTML = template;
+    btn.disabled = false;
+    btn.classList.remove('generating');
     btnText.textContent = t.generateButton;
+
+    // Smooth scroll to output
+    output.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function typeAddress(element, text) {
+    element.textContent = '';
+    for (let i = 0; i < text.length; i++) {
+        element.textContent += text.charAt(i);
+        await new Promise(r => setTimeout(r, 50));
+    }
+}
+
+function getRealEstateTemplate(name) {
+    return `
+        <div class="preview-site">
+            <nav class="preview-nav">
+                <div style="font-weight:bold; color:#2c3e50;">🏡 ${name} Real Estate</div>
+                <div style="font-size:0.8rem; display:flex; gap:10px;"><span>İlanlar</span><span>Hakkımızda</span><span>İletişim</span></div>
+            </nav>
+            <div class="preview-hero" style="background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80') center/cover;">
+                <h1 style="color:white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-size:1.5rem;">Hayalinizdeki Evi Bulun</h1>
+                <div style="background:white; padding:10px; margin-top:20px; border-radius:4px; font-size:0.8rem; color:#999; display:inline-block; width:80%;">Şehir, mahalle veya ilan no ile ara...</div>
+            </div>
+            <div class="preview-grid">
+                ${[1, 2, 3].map(i => `
+                    <div class="preview-card">
+                        <div class="preview-image-box" style="background:#ddd;">🏠 İlan #${i}</div>
+                        <p style="font-weight:bold; margin:0;">Modern Villa</p>
+                        <p style="font-size:0.75rem; color:#27ae60;">4.500.000 TL</p>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function getCoffeeTemplate(name) {
+    return `
+        <div class="preview-site" style="background:#fdfcf0;">
+            <nav class="preview-nav" style="background:#3e2723; color:white;">
+                <div style="font-weight:bold;">☕ ${name}</div>
+                <div style="font-size:0.8rem; display:flex; gap:10px;"><span>Menü</span><span>Hikayemiz</span></div>
+            </nav>
+            <div class="preview-hero" style="background:#5d4037; color:white; padding:3rem 1rem;">
+                <h1 style="font-size:1.4rem;">Günün İlk Kahvesi Mira AI İle</h1>
+                <button style="background:#d7ccc8; border:none; padding:8px 15px; margin-top:15px; border-radius:20px; font-size:0.8rem;">Şimdi Sipariş Ver</button>
+            </div>
+            <div style="padding:1.5rem; display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                <div class="preview-card" style="text-align:center;">
+                    <div style="font-size:2rem;">☕</div>
+                    <p style="font-weight:bold;">Espresso</p>
+                    <p style="font-size:0.7rem;">Zengin ve yoğun aroma</p>
+                </div>
+                <div class="preview-card" style="text-align:center;">
+                    <div style="font-size:2rem;">🥛</div>
+                    <p style="font-weight:bold;">Latte</p>
+                    <p style="font-size:0.7rem;">Yumuşak süt köpüğü</p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function getGymTemplate(name) {
+    return `
+        <div class="preview-site" style="background:#111; color:white;">
+            <div style="padding:1.5rem; text-align:center; background:#ff4444;">
+                <h1 style="font-size:1.5rem; font-weight:900;">🔥 ${name.toUpperCase()} CORE</h1>
+            </div>
+            <div class="preview-hero" style="background: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80') center/cover; height:200px; display:flex; align-items:center; justify-content:center;">
+                <div style="background:rgba(0,0,0,0.7); padding:1rem; border-left:4px solid #ff4444;">
+                    <p style="margin:0; font-weight:bold;">SINIRLARINI ZORLA</p>
+                </div>
+            </div>
+            <div style="padding:1.5rem;">
+                <div style="background:#222; padding:1rem; border-radius:8px; margin-bottom:1rem;">
+                    <p style="margin:0; font-size:0.8rem; color:#ff4444;">Popüler Program</p>
+                    <p style="margin:5px 0; font-weight:bold;">CrossFit Elite</p>
+                    <button style="background:#ff4444; color:white; border:none; width:100%; padding:8px; border-radius:4px; margin-top:10px; font-weight:bold;">KATIL</button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function getDefaultTemplate(name) {
+    return `
+        <div class="preview-site">
+            <nav class="preview-nav">
+                <div style="font-weight:bold;">✨ ${name}</div>
+            </nav>
+            <div class="preview-hero">
+                <h1>Sizin İçin Tasarlandı</h1>
+                <p>Modern ve profesyonel arayüz çözümleri.</p>
+            </div>
+            <div class="preview-grid">
+                <div class="preview-card">Özellik 1</div>
+                <div class="preview-card">Özellik 2</div>
+                <div class="preview-card">Özellik 3</div>
+            </div>
+        </div>
+    `;
 }
 
 function generateDescription(projectName, techStack, keywords) {
@@ -480,3 +763,166 @@ function startCodeTypewriter() {
 
     typeToken();
 }
+
+function getEcommerceTemplate(name) {
+    return `
+        <div class="preview-site" style="background:#f8f9fa;">
+            <nav class="preview-nav" style="border-bottom: 2px solid #000;">
+                <div style="font-weight:bold; font-size:1.2rem; letter-spacing:-1px;">🛍️ ${name.toUpperCase()}</div>
+                <div style="display:flex; gap:15px; font-size:0.75rem;"><span>Mağaza</span><span>İndirimdekiler</span><span>🛒 (0)</span></div>
+            </nav>
+            <div class="preview-hero" style="background: #000; color:white; padding:2rem 1rem;">
+                <p style="text-transform:uppercase; font-size:0.6rem; color:#aaa; margin-bottom:5px;">Yeni Sezon Geldi</p>
+                <h1 style="font-size:1.6rem; margin:0;">STİLİNİZİ KEŞFEDİN</h1>
+                <button style="margin-top:15px; background:white; color:black; border:none; padding:8px 20px; font-weight:bold; font-size:0.75rem;">SATIN AL</button>
+            </div>
+            <div class="preview-grid" style="padding:1rem;">
+                ${[1, 2, 3, 4].map(i => `
+                    <div class="preview-card" style="border:none; background:white; padding:0;">
+                        <div class="preview-image-box" style="background:#eee; height:120px; position:relative;">
+                            <span style="position:absolute; top:5px; left:5px; background:black; color:white; font-size:0.5rem; padding:2px 5px;">YENİ</span>
+                        </div>
+                        <div style="padding:8px;">
+                            <p style="font-size:0.75rem; margin:0; color:#555;">Ürün #${i}</p>
+                            <p style="font-weight:bold; margin:0; font-size:0.85rem;">249.90 TL</p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function getRestaurantTemplate(name) {
+    return `
+        <div class="preview-site" style="background:#fffaf5;">
+            <nav class="preview-nav" style="background:transparent; position:absolute; width:100%; z-index:2; border:none;">
+                <div style="font-weight:bold; color:white; font-family:'Playfair Display', serif;">🍴 ${name}</div>
+                <div style="color:white; font-size:0.75rem;">Rezervasyon</div>
+            </nav>
+            <div class="preview-hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80') center/cover; height:250px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white;">
+                <h1 style="font-size:1.8rem; font-family:serif;">Eşsiz Lezzet Durağı</h1>
+                <p style="font-style:italic; font-size:0.8rem; margin-top:5px;">Geleneksel tatlar, modern dokunuşlar</p>
+            </div>
+            <div style="padding:1.5rem;">
+                <h2 style="font-size:1rem; text-align:center; border-bottom:1px solid #ddd; padding-bottom:10px; margin-bottom:15px;">Şefin Seçimleri</h2>
+                <div style="display:grid; gap:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                        <div>
+                            <p style="font-weight:bold; margin:0; font-size:0.9rem;">Özel Soslu Makarna</p>
+                            <p style="font-size:0.7rem; color:#888; margin:0;">Taze fesleğen ve parmesan ile</p>
+                        </div>
+                        <div style="font-weight:bold; color:#d4a373;">185TL</div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                        <div>
+                            <p style="font-weight:bold; margin:0; font-size:0.9rem;">Kuzu Tandır</p>
+                            <p style="font-size:0.7rem; color:#888; margin:0;">Ağır ateşte 12 saat pişmiş</p>
+                        </div>
+                        <div style="font-weight:bold; color:#d4a373;">340TL</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function getPortfolioTemplate(name) {
+    return `
+        <div class="preview-site" style="background:#fff;">
+            <div style="padding:2rem; text-align:center;">
+                <div style="width:80px; height:80px; background:#000; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.5rem; font-weight:bold;">${name.charAt(0)}</div>
+                <h1 style="font-size:1.5rem; font-weight:900; letter-spacing:-1px; margin:0;">${name.toUpperCase()}</h1>
+                <p style="font-size:0.85rem; color:#666; margin-top:5px;">UI/UX Tasarımcı & Geliştirici</p>
+                <div style="display:flex; justify-content:center; gap:10px; margin-top:15px;">
+                    <span style="background:#eee; padding:3px 10px; border-radius:20px; font-size:0.6rem; font-weight:bold;">REACT</span>
+                    <span style="background:#eee; padding:3px 10px; border-radius:20px; font-size:0.6rem; font-weight:bold;">FIGMA</span>
+                    <span style="background:#eee; padding:3px 10px; border-radius:20px; font-size:0.6rem; font-weight:bold;">NODE.JS</span>
+                </div>
+            </div>
+            <div style="background:#000; color:white; padding:1.5rem;">
+                <h2 style="font-size:0.9rem; margin-bottom:1rem; opacity:0.7;">PROJELER</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div style="background:#1a1a1a; height:100px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">Proje A</div>
+                    <div style="background:#1a1a1a; height:100px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">Proje B</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Background Code Snippets Spawning Logic
+function createCodeSnippet() {
+    if (!codeSnippets || codeSnippets.length === 0) return;
+
+    const snippet = document.createElement('div');
+    snippet.className = 'code-snippet';
+
+    // Pick random snippet
+    const text = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+    snippet.innerText = text;
+
+    // Random position
+    const posX = Math.random() * window.innerWidth;
+    const posY = Math.random() * window.innerHeight + (window.innerHeight * 0.5); // Start slightly lower
+
+    snippet.style.left = `${posX}px`;
+    snippet.style.top = `${posY}px`;
+
+    // Random font size and opacity variation
+    const size = 0.6 + Math.random() * 0.5;
+    snippet.style.fontSize = `${size}rem`;
+
+    // Random animation duration for variety
+    const duration = 10 + Math.random() * 10;
+    snippet.style.animationDuration = `4s, ${duration}s`;
+
+    document.body.appendChild(snippet);
+
+    // Clean up after animation finishes
+    setTimeout(() => {
+        snippet.remove();
+    }, duration * 1000);
+}
+
+// 3D Tilt Effect Logic
+function init3DTilt() {
+    const cards = document.querySelectorAll('.bento-card, .portfolio-card, .tech-card, .team-card');
+
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+        });
+    });
+}
+
+// Update Language Switcher to Re-bind Listeners
+const originalSwitchLanguage = switchLanguage;
+switchLanguage = function (lang) {
+    originalSwitchLanguage(lang);
+    setTimeout(() => {
+        init3DTilt();
+    }, 100);
+};
+
+// Final Initialization
+initCodeSnippets();
+init3DTilt();
+document.getElementById('ai-form').addEventListener('submit', (e) => {
+    // Re-bind Tilt after AI generation rendering
+    setTimeout(init3DTilt, 3500);
+});

@@ -6,7 +6,8 @@ const projects = [
         title: 'Giydir',
         category: 'Sanal Deneme & Yapay Zeka',
         description: 'Giydir, moda tutkunları ve stilistler için devrim niteliğinde bir sanal deneme uygulamasıdır. Gelişmiş yapay zeka teknolojimiz, kullanıcıların kendi fotoğraflarını yükleyerek veya mevcut modellerimizden birini seçerek diledikleri kıyafeti saniyeler içinde dijital olarak denemelerine olanak tanır. Uygulama, kıyafetin vücuda tam oturmasını sağlayarak gerçekçi bir deneyim sunar ve kişiselleştirilmiş kombin önerileriyle stilinizi bir üst seviyeye taşımanıza yardımcı olur.',
-        imageUrl: 'https://images.unsplash.com/photo-1632773004171-02bc1c4a726a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjbG90aGluZyUyMGFwcHxlbnwwfHx8fDE3NjcyNzAxMjN8MA&ixlib=rb-4.1.0&q=80&w=1080'
+        imageUrl: 'https://images.unsplash.com/photo-1632773004171-02bc1c4a726a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjbG90aGluZyUyMGFwcHxlbnwwfHx8fDE3NjcyNzAxMjN8MA&ixlib=rb-4.1.0&q=80&w=1080',
+        iconType: 'giydir'
     },
     {
         id: 'portfolio-6',
@@ -14,7 +15,8 @@ const projects = [
         title: 'Melodixor',
         category: 'Müzik Tanıma & Yapay Zeka',
         description: 'Melodixor, müziği keşfetmenin sınırlarını zorlayan akıllı bir uygulamadır. Gürültülü bir konser ortamında çalan şarkıyı veya sadece aklınıza takılan bir melodiyi mırıldanarak anında tespit edebilirsiniz. Bununla da kalmaz, yenilikçi "Mood AI" özelliğimiz, o anki ruh halinize en uygun şarkıları ve çalma listelerini sizin için özenle seçer. Melodixor, müziğin duygusal gücünü parmaklarınızın ucuna getirir.',
-        imageUrl: 'https://images.unsplash.com/photo-1598965897529-f319a7725a35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bXVzaWMlMjBhcHB8ZW58MHx8fHwxNzY3MjcwMTIyfDA&ixlib=rb-4.1.0&q=80&w=1080'
+        imageUrl: 'https://images.unsplash.com/photo-1598965897529-f319a7725a35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bXVzaWMlMjBhcHB8ZW58MHx8fHwxNzY3MjcwMTIyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+        iconType: 'melodixor'
     },
     {
         id: 'portfolio-7',
@@ -22,20 +24,21 @@ const projects = [
         title: 'Mira Weather',
         category: 'Hava Durumu & Minimalist Tasarım',
         description: 'Mira Weather, hava durumu takibini bir sanat haline getiren, minimalist ve şık bir uygulamadır. Anlık ve doğru hava durumu tahminlerinin yanı sıra, kullanıcı dostu arayüzü ve sade tasarımıyla öne çıkar. Detaylı saatlik ve haftalık tahminler, kişiselleştirilebilir bildirimler ve zarif ana ekran widget\'ları ile gününüzü en doğru şekilde planlamanıza yardımcı olur. Karmaşadan uzak, sadece ihtiyacınız olan bilgi.',
-        imageUrl: 'https://images.unsplash.com/photo-1561484930-998b6a7b22e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d2VhdGhlciUyMGFwcHxlbnwwfHx8fDE3NjcyNzAxMjJ8MA&ixlib=rb-4.1.0&q=80&w=1080'
+        imageUrl: 'https://images.unsplash.com/photo-1561484930-998b6a7b22e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d2VhdGhlciUyMGFwcHxlbnwwfHx8fDE3NjcyNzAxMjJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
+        iconType: 'weather'
     }
 ];
 
 // Technologies
 const technologies = [
-    { name: 'React Native', icon: '📱' },
-    { name: 'Flutter', icon: '📱' },
-    { name: 'Swift (iOS)', icon: '💻' },
-    { name: 'Kotlin (Android)', icon: '💻' },
-    { name: 'Node.js', icon: '🗄️' },
-    { name: 'Firebase', icon: '🔥' },
-    { name: 'Genkit AI', icon: '🤖' },
-    { name: 'Figma', icon: '🎨' }
+    { name: 'React Native', iconType: 'react-atom' },
+    { name: 'Flutter', iconType: 'flutter-layers' },
+    { name: 'Swift (iOS)', iconType: 'swift-bird' },
+    { name: 'Kotlin (Android)', iconType: 'kotlin-gear' },
+    { name: 'Node.js', iconType: 'node-cluster' },
+    { name: 'Firebase', iconType: 'firebase-cloud' },
+    { name: 'Genkit AI', iconType: 'ai-brain' },
+    { name: 'Figma', iconType: 'figma-cursor' }
 ];
 
 // Team Members
@@ -63,7 +66,7 @@ const translations = {
             portfolio: 'Portfolyo',
             techStack: 'Teknolojiler',
             ourTeam: 'Ekibimiz',
-            projectGenerator: 'Proje Oluşturucu'
+            projectGenerator: 'AI Tasarımcı'
         },
         hero: {
             title: ['GELECEĞİ KODLUYORUZ', 'console.log("MiraTech")'],
@@ -89,21 +92,14 @@ const translations = {
             }
         },
         aiTool: {
-            title: 'Yapay Zeka Proje Açıklaması Oluşturucu',
-            description: 'Mobil uygulama projeleriniz için anında etkileyici açıklamalar oluşturun.',
-            formTitle: 'Proje Detaylarını Girin',
-            projectNameLabel: 'Proje Adı',
-            techStackLabel: 'Teknoloji Yığını',
-            keywordsLabel: 'Anahtar Kelimeler',
-            generateButton: 'Açıklama Oluştur',
-            formTitle: 'Proje Detaylarını Girin',
-            projectNameLabel: 'Proje Adı',
-            techStackLabel: 'Teknoloji Yığını',
-            keywordsLabel: 'Anahtar Kelimeler',
-            generateButton: 'Açıklama Oluştur',
-            generating: 'Oluşturuluyor...',
-            outputTitle: 'Oluşturulan Açıklama',
-            outputPlaceholder: 'Açıklamanız doğmayı bekliyor...'
+            title: 'Yapay Zeka Web Tasarım Simülatörü',
+            description: 'Hayalinizdeki web sitesini tarif edin, MiraTech AI anında görselleştirsin.',
+            formTitle: 'Web Sitenizi Tarif Edin',
+            projectNameLabel: 'İşletme Adı veya Proje',
+            keywordsLabel: 'Ne Tür Bir Site İstiyorsunuz?',
+            generateButton: 'Tasarımı Oluştur',
+            generating: 'Tasarım Yapılıyor...',
+            outputPlaceholder: 'Bilgileri girin ve yapay zekanın sihrini izleyin...'
         },
         vision: {
             title: 'İşinizi Büyütün',
@@ -118,7 +114,7 @@ const translations = {
             portfolio: 'Portfolio',
             techStack: 'Tech Stack',
             ourTeam: 'Our Team',
-            projectGenerator: 'Project Generator'
+            projectGenerator: 'AI Designer'
         },
         hero: {
             title: ['CODING THE FUTURE', 'console.log("MiraTech")'],
@@ -144,16 +140,14 @@ const translations = {
             }
         },
         aiTool: {
-            title: 'AI Project Description Generator',
-            description: 'Generate compelling descriptions for your mobile app projects instantly.',
-            formTitle: 'Enter Project Details',
-            projectNameLabel: 'Project Name',
-            techStackLabel: 'Tech Stack',
-            keywordsLabel: 'Keywords',
-            generateButton: 'Generate Description',
-            generating: 'Generating...',
-            outputTitle: 'Generated Description',
-            outputPlaceholder: 'Your description is waiting to be born...'
+            title: 'AI Web Design Simulator',
+            description: 'Describe your dream website, MiraTech AI will visualize it instantly.',
+            formTitle: 'Describe Your Website',
+            projectNameLabel: 'Business Name or Project',
+            keywordsLabel: 'What Kind of Site Do You Want?',
+            generateButton: 'Generate Design',
+            generating: 'Designing...',
+            outputPlaceholder: 'Enter details and watch the AI magic...'
         },
         vision: {
             title: 'Grow Your Business',
@@ -164,3 +158,25 @@ const translations = {
         }
     }
 };
+// Background Code Snippets
+const codeSnippets = [
+    'git push origin main',
+    'npm start',
+    'while(true) { build(); }',
+    'const miratech = new Vision();',
+    'if (success) { celebrate(); }',
+    '<body>',
+    'console.log("Hello MiraTech");',
+    'chmod +x script.sh',
+    'import { future } from "miratech";',
+    'docker-compose up -d',
+    'api.fetch("/data").then(render);',
+    'export default App;',
+    'await db.sync();',
+    'for(let i=0; i<10; i++) { innovate(); }',
+    'git commit -m "Future is here"',
+    'const brain = AI.initialize();',
+    '<div>',
+    'npm install @miratech/core',
+    'ssh root@future'
+];

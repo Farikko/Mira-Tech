@@ -20,6 +20,9 @@
 </head>
 
 <body>
+    <!-- Premium Enhancements -->
+    <div class="digital-grain"></div>
+
     <!-- Header -->
     <header id="header">
         <div class="container">
@@ -29,7 +32,7 @@
                 <a href="#portfolio" class="nav-link" data-i18n="header.portfolio">Portfolyo</a>
                 <a href="#tech-stack" class="nav-link" data-i18n="header.techStack">Teknolojiler</a>
                 <a href="#team" class="nav-link" data-i18n="header.ourTeam">Ekibimiz</a>
-                <a href="#ai-tool" class="nav-link" data-i18n="header.projectGenerator">Proje Oluşturucu</a>
+                <a href="#ai-designer" class="nav-link" data-i18n="header.projectGenerator">AI Tasarımcı</a>
                 <button id="lang-toggle" class="lang-btn" aria-label="Change language">
                     <span id="lang-icon">🇬🇧</span>
                 </button>
@@ -50,7 +53,7 @@
             <a href="#portfolio" class="mobile-nav-link" data-i18n="header.portfolio">Portfolyo</a>
             <a href="#tech-stack" class="mobile-nav-link" data-i18n="header.techStack">Teknolojiler</a>
             <a href="#team" class="mobile-nav-link" data-i18n="header.ourTeam">Ekibimiz</a>
-            <a href="#ai-tool" class="mobile-nav-link" data-i18n="header.projectGenerator">Proje Oluşturucu</a>
+            <a href="#ai-designer" class="mobile-nav-link" data-i18n="header.projectGenerator">AI Tasarımcı</a>
         </div>
     </header>
 
@@ -201,41 +204,57 @@
         </div>
     </section>
 
-    <!-- AI Tool Section -->
-    <section id="ai-tool" class="ai-tool">
+    <!-- AI Designer Section -->
+    <section id="ai-designer" class="ai-tool ai-designer">
         <div class="container">
             <div class="section-header">
-                <h2 data-i18n="aiTool.title">Yapay Zeka Proje Açıklaması Oluşturucu</h2>
-                <p data-i18n="aiTool.description">Mobil uygulama projeleriniz için anında etkileyici açıklamalar
-                    oluşturun.</p>
+                <h2 data-i18n="aiTool.title">Yapay Zeka Web Tasarım Simülatörü</h2>
+                <p data-i18n="aiTool.description">Hayalinizdeki web sitesini tarif edin, MiraTech AI anında
+                    görselleştirsin.</p>
             </div>
             <div class="ai-tool-container">
                 <div class="ai-form-card">
-                    <h3 data-i18n="aiTool.formTitle">Proje Detaylarını Girin</h3>
+                    <h3 data-i18n="aiTool.formTitle">Web Sitenizi Tarif Edin</h3>
                     <form id="ai-form">
                         <div class="form-group">
-                            <label data-i18n="aiTool.projectNameLabel">Proje Adı</label>
-                            <input type="text" id="project-name" placeholder="e.g., MiraConnect" required>
+                            <label data-i18n="aiTool.projectNameLabel">İşletme Adı veya Proje</label>
+                            <input type="text" id="project-name" placeholder="Örn: Mira Emlak, Coffee Haven..."
+                                required>
                         </div>
                         <div class="form-group">
-                            <label data-i18n="aiTool.techStackLabel">Teknoloji Yığını</label>
-                            <textarea id="tech-stack-input" placeholder="e.g., React Native, Firebase, Swift"
-                                rows="3"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label data-i18n="aiTool.keywordsLabel">Anahtar Kelimeler</label>
-                            <textarea id="keywords" placeholder="e.g., social, real-time, user-friendly"
-                                rows="3"></textarea>
+                            <label data-i18n="aiTool.keywordsLabel">Ne Tür Bir Site İstiyorsunuz?</label>
+                            <textarea id="keywords"
+                                placeholder="Örn: Modern bir emlak sitesi, minimalist bir kahve dükkanı portfolyosu..."
+                                rows="4" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-accent">
-                            <span id="generate-btn-text" data-i18n="aiTool.generateButton">Açıklama Oluştur</span>
+                            <span id="generate-btn-text" data-i18n="aiTool.generateButton">Tasarımı Oluştur</span>
                         </button>
                     </form>
                 </div>
-                <div class="ai-output-card">
-                    <h3 data-i18n="aiTool.outputTitle">Oluşturulan Açıklama</h3>
-                    <div id="ai-output" class="ai-output">
-                        <p class="placeholder" data-i18n="aiTool.outputPlaceholder">Açıklamanız doğmayı bekliyor...</p>
+                <div class="ai-output-card designer-preview">
+                    <div class="browser-mockup">
+                        <div class="browser-header">
+                            <div class="browser-dots">
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                            </div>
+                            <div class="browser-address">www.miratech-ai.com/preview</div>
+                        </div>
+                        <div id="ai-output" class="browser-body">
+                            <div class="placeholder-content">
+                                <div class="ai-loading-overlay" id="ai-loader" style="display: none;">
+                                    <div class="matrix-loader"></div>
+                                    <div class="status-logs" id="status-logs"></div>
+                                </div>
+                                <div class="initial-message">
+                                    <span class="icon">✨</span>
+                                    <p data-i18n="aiTool.outputPlaceholder">Bilgileri girin ve yapay zekanın sihrini
+                                        izleyin...</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
