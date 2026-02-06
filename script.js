@@ -7,9 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeApp() {
-    // Set current year in footer
-    document.getElementById('year').textContent = new Date().getFullYear();
-
     // Initialize language
     updateLanguage();
 
@@ -80,6 +77,15 @@ function updateLanguage() {
         }
     });
 
+    // Update placeholders
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        const value = getNestedValue(t, key);
+        if (value) {
+            element.placeholder = value;
+        }
+    });
+
     // Update language icons
     const icon = currentLang === 'tr' ? '🇬🇧' : '🇹🇷';
     document.getElementById('lang-icon').textContent = icon;
@@ -90,6 +96,9 @@ function updateLanguage() {
 
     // Re-render team to update roles
     renderTeam();
+
+    // Re-initialize 3D tilt
+    init3DTilt();
 }
 
 function getNestedValue(obj, path) {
@@ -332,7 +341,7 @@ function renderTechStack() {
                     </div>`;
                 break;
             default:
-                iconHtml = `<span class="icon">💻</span>`;
+                iconHtml = `<span class="icon">ğŸ’»</span>`;
         }
 
         return `
@@ -349,7 +358,9 @@ function renderTeam() {
 
     grid.innerHTML = teamMembers.map(member => `
         <div class="team-card">
-            <div class="team-avatar">${member.initials}</div>
+            <div class="team-avatar">
+                ${member.image ? `<img src="${member.image}" alt="${member.name}">` : member.initials}
+            </div>
             <h3>${member.name}</h3>
             <p class="title">${t.titles[member.titleKey]}</p>
             <p class="role">${t.roles[member.roleKey]}</p>
@@ -381,14 +392,11 @@ async function handleAIFormSubmit(e) {
     // Initial address bar reset
     addressBar.textContent = '...';
 
-    const logs = [
-        "Analiz ediliyor: " + keywords,
-        "Sektör belirlendi, uygun şablon seçiliyor...",
-        "Adres doğrulanıyor: www." + projectName.toLowerCase().replace(/\s/g, '-') + ".com",
-        "Renk paleti ve tipografi optimize ediliyor...",
-        "Dinamik içerikler enjekte ediliyor...",
-        "Tasarım final haline getiriliyor..."
-    ];
+    const url = projectName.toLowerCase().replace(/\s/g, '-');
+    const logs = t.logs.map(log =>
+        log.replace('{keywords}', keywords)
+            .replace('{url}', url)
+    );
 
     // Multi-tasking: Address typing + Logs
     const typeAddressPromise = typeAddress(addressBar, `www.${projectName.toLowerCase().replace(/\s/g, '-')}.com/preview`);
@@ -444,20 +452,21 @@ async function typeAddress(element, text) {
 }
 
 function getRealEstateTemplate(name) {
+    const t = translations[currentLang].aiTool.templates.realEstate;
     return `
         <div class="preview-site">
             <nav class="preview-nav">
-                <div style="font-weight:bold; color:#2c3e50;">🏡 ${name} Real Estate</div>
-                <div style="font-size:0.8rem; display:flex; gap:10px;"><span>İlanlar</span><span>Hakkımızda</span><span>İletişim</span></div>
+                <div style="font-weight:bold; color:#2c3e50;">🏠 ${name} Real Estate</div>
+                <div style="font-size:0.8rem; display:flex; gap:10px;"><span>${t.nav[0]}</span><span>${t.nav[1]}</span><span>${t.nav[2]}</span></div>
             </nav>
             <div class="preview-hero" style="background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80') center/cover;">
-                <h1 style="color:white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-size:1.5rem;">Hayalinizdeki Evi Bulun</h1>
-                <div style="background:white; padding:10px; margin-top:20px; border-radius:4px; font-size:0.8rem; color:#999; display:inline-block; width:80%;">Şehir, mahalle veya ilan no ile ara...</div>
+                <h1 style="color:white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-size:1.5rem;">${t.hero}</h1>
+                <div style="background:white; padding:10px; margin-top:20px; border-radius:4px; font-size:0.8rem; color:#999; display:inline-block; width:80%;">${t.search}</div>
             </div>
             <div class="preview-grid">
                 ${[1, 2, 3].map(i => `
                     <div class="preview-card">
-                        <div class="preview-image-box" style="background:#ddd;">🏠 İlan #${i}</div>
+                        <div class="preview-image-box" style="background:#ddd;">🏡 ${t.cardLabel} #${i}</div>
                         <p style="font-weight:bold; margin:0;">Modern Villa</p>
                         <p style="font-size:0.75rem; color:#27ae60;">4.500.000 TL</p>
                     </div>
@@ -468,26 +477,27 @@ function getRealEstateTemplate(name) {
 }
 
 function getCoffeeTemplate(name) {
+    const t = translations[currentLang].aiTool.templates.coffee;
     return `
         <div class="preview-site" style="background:#fdfcf0;">
             <nav class="preview-nav" style="background:#3e2723; color:white;">
                 <div style="font-weight:bold;">☕ ${name}</div>
-                <div style="font-size:0.8rem; display:flex; gap:10px;"><span>Menü</span><span>Hikayemiz</span></div>
+                <div style="font-size:0.8rem; display:flex; gap:10px;"><span>${t.nav[0]}</span><span>${t.nav[1]}</span></div>
             </nav>
             <div class="preview-hero" style="background:#5d4037; color:white; padding:3rem 1rem;">
-                <h1 style="font-size:1.4rem;">Günün İlk Kahvesi Mira AI İle</h1>
-                <button style="background:#d7ccc8; border:none; padding:8px 15px; margin-top:15px; border-radius:20px; font-size:0.8rem;">Şimdi Sipariş Ver</button>
+                <h1 style="font-size:1.4rem;">${t.hero}</h1>
+                <button style="background:#d7ccc8; border:none; padding:8px 15px; margin-top:15px; border-radius:20px; font-size:0.8rem;">${t.button}</button>
             </div>
             <div style="padding:1.5rem; display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
                 <div class="preview-card" style="text-align:center;">
                     <div style="font-size:2rem;">☕</div>
                     <p style="font-weight:bold;">Espresso</p>
-                    <p style="font-size:0.7rem;">Zengin ve yoğun aroma</p>
+                    <p style="font-size:0.7rem;">${t.espresso}</p>
                 </div>
                 <div class="preview-card" style="text-align:center;">
                     <div style="font-size:2rem;">🥛</div>
                     <p style="font-weight:bold;">Latte</p>
-                    <p style="font-size:0.7rem;">Yumuşak süt köpüğü</p>
+                    <p style="font-size:0.7rem;">${t.latte}</p>
                 </div>
             </div>
         </div>
@@ -495,6 +505,7 @@ function getCoffeeTemplate(name) {
 }
 
 function getGymTemplate(name) {
+    const t = translations[currentLang].aiTool.templates.gym;
     return `
         <div class="preview-site" style="background:#111; color:white;">
             <div style="padding:1.5rem; text-align:center; background:#ff4444;">
@@ -502,14 +513,14 @@ function getGymTemplate(name) {
             </div>
             <div class="preview-hero" style="background: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80') center/cover; height:200px; display:flex; align-items:center; justify-content:center;">
                 <div style="background:rgba(0,0,0,0.7); padding:1rem; border-left:4px solid #ff4444;">
-                    <p style="margin:0; font-weight:bold;">SINIRLARINI ZORLA</p>
+                    <p style="margin:0; font-weight:bold;">${t.hero}</p>
                 </div>
             </div>
             <div style="padding:1.5rem;">
                 <div style="background:#222; padding:1rem; border-radius:8px; margin-bottom:1rem;">
-                    <p style="margin:0; font-size:0.8rem; color:#ff4444;">Popüler Program</p>
-                    <p style="margin:5px 0; font-weight:bold;">CrossFit Elite</p>
-                    <button style="background:#ff4444; color:white; border:none; width:100%; padding:8px; border-radius:4px; margin-top:10px; font-weight:bold;">KATIL</button>
+                    <p style="margin:0; font-size:0.8rem; color:#ff4444;">${t.badge}</p>
+                    <p style="margin:5px 0; font-weight:bold;">${t.program}</p>
+                    <button style="background:#ff4444; color:white; border:none; width:100%; padding:8px; border-radius:4px; margin-top:10px; font-weight:bold;">${t.button}</button>
                 </div>
             </div>
         </div>
@@ -517,35 +528,38 @@ function getGymTemplate(name) {
 }
 
 function getDefaultTemplate(name) {
+    const t = translations[currentLang].aiTool.templates.default;
     return `
         <div class="preview-site">
             <nav class="preview-nav">
                 <div style="font-weight:bold;">✨ ${name}</div>
             </nav>
             <div class="preview-hero">
-                <h1>Sizin İçin Tasarlandı</h1>
-                <p>Modern ve profesyonel arayüz çözümleri.</p>
+                <h1>${t.hero}</h1>
+                <p>${t.subtitle}</p>
             </div>
             <div class="preview-grid">
-                <div class="preview-card">Özellik 1</div>
-                <div class="preview-card">Özellik 2</div>
-                <div class="preview-card">Özellik 3</div>
+                <div class="preview-card">${t.feature} 1</div>
+                <div class="preview-card">${t.feature} 2</div>
+                <div class="preview-card">${t.feature} 3</div>
             </div>
         </div>
     `;
 }
 
 function generateDescription(projectName, techStack, keywords) {
-    const templates = [
-        `${projectName}, kullanıcıların ihtiyaçlarını karşılamak için tasarlanmış yenilikçi bir mobil uygulamadır. ${techStack} teknolojileri kullanılarak geliştirilmiş olan uygulama, ${keywords} özellikleriyle öne çıkar. Modern ve kullanıcı dostu arayüzü sayesinde, kullanıcılar sorunsuz bir deneyim yaşar. Uygulama, yüksek performans ve güvenilirlik sunarak, kullanıcıların günlük hayatlarını kolaylaştırmayı amaçlar.`,
+    const templates = {
+        tr: [
+            `${projectName}, kullanıcıların ihtiyaçlarını karşılamak için tasarlanmış yenilikçi bir mobil uygulamadır. ${techStack} teknolojileri kullanılarak geliştirilmiş olan uygulama, ${keywords} özellikleriyle öne çıkar. Modern ve kullanıcı dostu arayüzü sayesinde, kullanıcılar sorunsuz bir deneyim yaşar. Uygulama, yüksek performans ve güvenilirlik sunarak, kullanıcıların günlük hayatlarını kolaylaştırmayı amaçlar.`
+        ],
+        en: [
+            `${projectName} is an innovative mobile application designed to meet users' needs. Developed using ${techStack} technologies, the app stands out with its ${keywords} features. Thanks to its modern and user-friendly interface, users experience a seamless journey. The application aims to simplify users' daily lives by offering high performance and reliability.`,
+            `${projectName} represents the future of mobile applications. Built with cutting-edge ${techStack} technologies, it delivers ${keywords} experiences that users love. Our team has crafted every detail to ensure maximum user satisfaction and engagement. The app combines powerful functionality with elegant design, making it a must-have tool for modern users.`
+        ]
+    };
 
-        `${projectName} is an innovative mobile application designed to meet users' needs. Developed using ${techStack} technologies, the app stands out with its ${keywords} features. Thanks to its modern and user-friendly interface, users experience a seamless journey. The application aims to simplify users' daily lives by offering high performance and reliability.`,
-
-        `${projectName} represents the future of mobile applications. Built with cutting-edge ${techStack} technologies, it delivers ${keywords} experiences that users love. Our team has crafted every detail to ensure maximum user satisfaction and engagement. The app combines powerful functionality with elegant design, making it a must-have tool for modern users.`
-    ];
-
-    // Select random template
-    return templates[Math.floor(Math.random() * templates.length)];
+    const currentTemplates = templates[currentLang] || templates['tr'];
+    return currentTemplates[Math.floor(Math.random() * currentTemplates.length)];
 }
 
 // Add fade-in animation to sections on scroll
@@ -580,10 +594,10 @@ let typewriterTimeout;
 function typeWriter(element, textOrArray) {
     if (typewriterTimeout) clearTimeout(typewriterTimeout);
 
-    // Handle simple string
+    element.classList.add('typewriter-cursor');
+
     if (typeof textOrArray === 'string') {
         element.textContent = '';
-        element.classList.add('typewriter-cursor');
         let i = 0;
         function type() {
             if (i < textOrArray.length) {
@@ -596,36 +610,28 @@ function typeWriter(element, textOrArray) {
         return;
     }
 
-    // Handle array of strings (Rotation)
     if (Array.isArray(textOrArray)) {
-        element.classList.add('typewriter-cursor');
         let arrayIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
-        let txt = '';
 
         function typeLoop() {
             const currentFullText = textOrArray[arrayIndex];
 
             if (isDeleting) {
-                txt = currentFullText.substring(0, charIndex - 1);
+                element.textContent = currentFullText.substring(0, charIndex - 1);
                 charIndex--;
             } else {
-                txt = currentFullText.substring(0, charIndex + 1);
+                element.textContent = currentFullText.substring(0, charIndex + 1);
                 charIndex++;
             }
 
-            element.textContent = txt;
-
-            let typeSpeed = 100;
-            if (isDeleting) typeSpeed /= 2;
+            let typeSpeed = isDeleting ? 50 : 100;
 
             if (!isDeleting && charIndex === currentFullText.length) {
-                // Completed typing
                 typeSpeed = 2000;
                 isDeleting = true;
             } else if (isDeleting && charIndex === 0) {
-                // Completed deleting
                 isDeleting = false;
                 arrayIndex = (arrayIndex + 1) % textOrArray.length;
                 typeSpeed = 500;
@@ -633,7 +639,6 @@ function typeWriter(element, textOrArray) {
 
             typewriterTimeout = setTimeout(typeLoop, typeSpeed);
         }
-
         typeLoop();
     }
 }
@@ -765,25 +770,26 @@ function startCodeTypewriter() {
 }
 
 function getEcommerceTemplate(name) {
+    const t = translations[currentLang].aiTool.templates.ecommerce;
     return `
         <div class="preview-site" style="background:#f8f9fa;">
             <nav class="preview-nav" style="border-bottom: 2px solid #000;">
                 <div style="font-weight:bold; font-size:1.2rem; letter-spacing:-1px;">🛍️ ${name.toUpperCase()}</div>
-                <div style="display:flex; gap:15px; font-size:0.75rem;"><span>Mağaza</span><span>İndirimdekiler</span><span>🛒 (0)</span></div>
+                <div style="display:flex; gap:15px; font-size:0.75rem;"><span>${t.nav[0]}</span><span>${t.nav[1]}</span><span>🛒 (0)</span></div>
             </nav>
             <div class="preview-hero" style="background: #000; color:white; padding:2rem 1rem;">
-                <p style="text-transform:uppercase; font-size:0.6rem; color:#aaa; margin-bottom:5px;">Yeni Sezon Geldi</p>
-                <h1 style="font-size:1.6rem; margin:0;">STİLİNİZİ KEŞFEDİN</h1>
-                <button style="margin-top:15px; background:white; color:black; border:none; padding:8px 20px; font-weight:bold; font-size:0.75rem;">SATIN AL</button>
+                <p style="text-transform:uppercase; font-size:0.6rem; color:#aaa; margin-bottom:5px;">${t.badge}</p>
+                <h1 style="font-size:1.6rem; margin:0;">${t.hero}</h1>
+                <button style="margin-top:15px; background:white; color:black; border:none; padding:8px 20px; font-weight:bold; font-size:0.75rem;">${t.button}</button>
             </div>
             <div class="preview-grid" style="padding:1rem;">
                 ${[1, 2, 3, 4].map(i => `
                     <div class="preview-card" style="border:none; background:white; padding:0;">
                         <div class="preview-image-box" style="background:#eee; height:120px; position:relative;">
-                            <span style="position:absolute; top:5px; left:5px; background:black; color:white; font-size:0.5rem; padding:2px 5px;">YENİ</span>
+                            <span style="position:absolute; top:5px; left:5px; background:black; color:white; font-size:0.5rem; padding:2px 5px;">${t.badge}</span>
                         </div>
                         <div style="padding:8px;">
-                            <p style="font-size:0.75rem; margin:0; color:#555;">Ürün #${i}</p>
+                            <p style="font-size:0.75rem; margin:0; color:#555;">${t.product} #${i}</p>
                             <p style="font-weight:bold; margin:0; font-size:0.85rem;">249.90 TL</p>
                         </div>
                     </div>
@@ -794,30 +800,31 @@ function getEcommerceTemplate(name) {
 }
 
 function getRestaurantTemplate(name) {
+    const t = translations[currentLang].aiTool.templates.restaurant;
     return `
         <div class="preview-site" style="background:#fffaf5;">
             <nav class="preview-nav" style="background:transparent; position:absolute; width:100%; z-index:2; border:none;">
-                <div style="font-weight:bold; color:white; font-family:'Playfair Display', serif;">🍴 ${name}</div>
-                <div style="color:white; font-size:0.75rem;">Rezervasyon</div>
+                <div style="font-weight:bold; color:white; font-family:'Playfair Display', serif;">🍽️ ${name}</div>
+                <div style="color:white; font-size:0.75rem;">${t.nav}</div>
             </nav>
             <div class="preview-hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80') center/cover; height:250px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white;">
-                <h1 style="font-size:1.8rem; font-family:serif;">Eşsiz Lezzet Durağı</h1>
-                <p style="font-style:italic; font-size:0.8rem; margin-top:5px;">Geleneksel tatlar, modern dokunuşlar</p>
+                <h1 style="font-size:1.8rem; font-family:serif;">${t.hero}</h1>
+                <p style="font-style:italic; font-size:0.8rem; margin-top:5px;">${t.subtitle}</p>
             </div>
             <div style="padding:1.5rem;">
-                <h2 style="font-size:1rem; text-align:center; border-bottom:1px solid #ddd; padding-bottom:10px; margin-bottom:15px;">Şefin Seçimleri</h2>
+                <h2 style="font-size:1rem; text-align:center; border-bottom:1px solid #ddd; padding-bottom:10px; margin-bottom:15px;">${t.title}</h2>
                 <div style="display:grid; gap:10px;">
                     <div style="display:flex; justify-content:space-between; align-items:flex-end;">
                         <div>
-                            <p style="font-weight:bold; margin:0; font-size:0.9rem;">Özel Soslu Makarna</p>
-                            <p style="font-size:0.7rem; color:#888; margin:0;">Taze fesleğen ve parmesan ile</p>
+                            <p style="font-weight:bold; margin:0; font-size:0.9rem;">${t.item1.name}</p>
+                            <p style="font-size:0.7rem; color:#888; margin:0;">${t.item1.desc}</p>
                         </div>
                         <div style="font-weight:bold; color:#d4a373;">185TL</div>
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:flex-end;">
                         <div>
-                            <p style="font-weight:bold; margin:0; font-size:0.9rem;">Kuzu Tandır</p>
-                            <p style="font-size:0.7rem; color:#888; margin:0;">Ağır ateşte 12 saat pişmiş</p>
+                            <p style="font-weight:bold; margin:0; font-size:0.9rem;">${t.item2.name}</p>
+                            <p style="font-size:0.7rem; color:#888; margin:0;">${t.item2.desc}</p>
                         </div>
                         <div style="font-weight:bold; color:#d4a373;">340TL</div>
                     </div>
@@ -828,12 +835,13 @@ function getRestaurantTemplate(name) {
 }
 
 function getPortfolioTemplate(name) {
+    const t = translations[currentLang].aiTool.templates.portfolio;
     return `
         <div class="preview-site" style="background:#fff;">
             <div style="padding:2rem; text-align:center;">
                 <div style="width:80px; height:80px; background:#000; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.5rem; font-weight:bold;">${name.charAt(0)}</div>
                 <h1 style="font-size:1.5rem; font-weight:900; letter-spacing:-1px; margin:0;">${name.toUpperCase()}</h1>
-                <p style="font-size:0.85rem; color:#666; margin-top:5px;">UI/UX Tasarımcı & Geliştirici</p>
+                <p style="font-size:0.85rem; color:#666; margin-top:5px;">${t.role}</p>
                 <div style="display:flex; justify-content:center; gap:10px; margin-top:15px;">
                     <span style="background:#eee; padding:3px 10px; border-radius:20px; font-size:0.6rem; font-weight:bold;">REACT</span>
                     <span style="background:#eee; padding:3px 10px; border-radius:20px; font-size:0.6rem; font-weight:bold;">FIGMA</span>
@@ -841,10 +849,10 @@ function getPortfolioTemplate(name) {
                 </div>
             </div>
             <div style="background:#000; color:white; padding:1.5rem;">
-                <h2 style="font-size:0.9rem; margin-bottom:1rem; opacity:0.7;">PROJELER</h2>
+                <h2 style="font-size:0.9rem; margin-bottom:1rem; opacity:0.7;">${t.projects}</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <div style="background:#1a1a1a; height:100px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">Proje A</div>
-                    <div style="background:#1a1a1a; height:100px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">Proje B</div>
+                    <div style="background:#1a1a1a; height:100px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">${t.projectA}</div>
+                    <div style="background:#1a1a1a; height:100px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">${t.projectB}</div>
                 </div>
             </div>
         </div>
@@ -911,13 +919,7 @@ function init3DTilt() {
 }
 
 // Update Language Switcher to Re-bind Listeners
-const originalSwitchLanguage = switchLanguage;
-switchLanguage = function (lang) {
-    originalSwitchLanguage(lang);
-    setTimeout(() => {
-        init3DTilt();
-    }, 100);
-};
+// Moved init3DTilt to updateLanguage() directly
 
 // Final Initialization
 initCodeSnippets();
@@ -925,4 +927,55 @@ init3DTilt();
 document.getElementById('ai-form').addEventListener('submit', (e) => {
     // Re-bind Tilt after AI generation rendering
     setTimeout(init3DTilt, 3500);
+});
+
+// Matrix Input Innovations
+function initMatrixInputs() {
+    const inputs = document.querySelectorAll('.matrix-input input, .matrix-input textarea');
+
+    inputs.forEach(input => {
+        const originalPlaceholder = input.getAttribute('data-i18n-placeholder') || input.placeholder;
+
+        input.addEventListener('focus', async () => {
+            if (input.value === '') {
+                input.placeholder = '';
+                const text = translations[currentLang]?.application?.[originalPlaceholder.split('.').pop()] ||
+                    translations[currentLang]?.aiTool?.[originalPlaceholder.split('.').pop()] ||
+                    originalPlaceholder;
+
+                for (let i = 0; i <= text.length; i++) {
+                    if (document.activeElement !== input) break;
+                    input.placeholder = text.substring(0, i) + (i < text.length ? '▋' : '');
+                    await new Promise(r => setTimeout(r, 30));
+                }
+            }
+        });
+
+        input.addEventListener('blur', () => {
+            input.placeholder = ' '; // Keep space for label float logic
+        });
+    });
+}
+
+// Application Form Logic
+document.addEventListener('DOMContentLoaded', () => {
+    initMatrixInputs();
+    const form = document.querySelector('#application-form');
+    const status = document.querySelector('#form-status');
+    const submitBtn = document.querySelector('#submit-btn');
+
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            const t = translations[currentLang].application;
+
+            // Show sending feedback
+            submitBtn.disabled = true;
+            submitBtn.classList.add('generating');
+            status.textContent = t.statusSending;
+            status.className = 'form-status';
+
+            // Form will submit naturally to FormSubmit.co
+            // FormSubmit will handle the redirect and email delivery
+        });
+    }
 });
