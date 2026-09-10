@@ -1,30 +1,83 @@
 // Project Data
 const projects = [
     {
+        id: 'portfolio-1',
+        slug: 'aguvi',
+        title: 'AGUVI',
+        category: 'Mobil & Sağlık Teknolojisi',
+        shortDescription: 'Ebeveynler için beslenme, uyku ve büyüme evrelerini interaktif grafikler ve akıllı anımsatıcılarla takip eden yeni nesil bebek gelişim platformu.',
+        description: 'AGUVI, bebek bakımını ve gelişim takibini kolaylaştıran modern bir Flutter uygulamasıdır. Hive yerel veritabanı, Lottie animasyonları ve fl_chart grafik altyapısıyla donatılan uygulama; aşı takviminden beslenme rutinine kadar her adımı güvenle kayıt altına alır.',
+        imageUrl: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+        iconType: 'aguvi'
+    },
+    {
+        id: 'portfolio-2',
+        slug: 'shoplive',
+        title: 'ShopLive',
+        category: 'Canlı Alışveriş & Sosyal Ticaret',
+        shortDescription: 'TikTok tarzı kesintisiz canlı yayın akışı üzerinden anlık ürün sabitleme, flash indirimler ve tek dokunuşla ödeme sunan sosyal ticaret uygulaması.',
+        description: 'ShopLive, canlı yayın heyecanını e-ticaret dinamikleriyle birleştiren React Native ve Expo SDK 51 tabanlı bir alışveriş platformudur. Reanimated v3 ile 60fps akıcı swipe hareketleri, canlı yayın içi sepet yönetimi ve satıcı kontrol paneli sağlar.',
+        imageUrl: '',
+        iconType: 'shoplive'
+    },
+    {
+        id: 'portfolio-3',
+        slug: 'kent21',
+        title: 'Kent21',
+        category: 'Akıllı Şehir & Şehir Rehberi',
+        shortDescription: 'İnteraktif şehir haritası, yerel kültürel rota rehberi, nöbetçi eczaneler ve akıllı belediye servislerini bir araya getiren kapsamlı kent platformu.',
+        description: 'Kent21, Diyarbakır için geliştirilmiş akıllı şehir ve yaşam rehberidir. Flutter ve Riverpod mimarisiyle inşa edilen uygulama; konum bazlı anlık bildirimler, ezan vakitleri ve zengin kültürel miras verileriyle vatandaşların ve turistlerin günlük rehberidir.',
+        imageUrl: '',
+        iconType: 'kent21'
+    },
+    {
+        id: 'portfolio-4',
+        slug: 'kundir',
+        title: 'Kundır 21',
+        category: 'Yapay Zeka & Yerel Asistan',
+        shortDescription: 'OLED Dark Mode estetiğiyle kentin dilini, tarihini ve sokak kültürünü anlayan, doğal dilde anlık sohbet eden yerelleştirilmiş yapay zeka asistanı.',
+        description: 'Kundır 21, Diyarbakır kültürüne ve yerel terminolojisine derinlemesine adapte edilmiş ilk yerel AI asistanıdır. Flutter ile geliştirilen OLED optimize karanlık teması ve hızlı yapay zeka yanıt motoruyla benzersiz bir etkileşim sunar.',
+        imageUrl: '',
+        iconType: 'kundir'
+    },
+    {
         id: 'portfolio-5',
-        slug: 'giydir',
-        title: 'Giydir',
-        category: 'Sanal Deneme & Yapay Zeka',
-        description: 'Giydir, moda tutkunları ve stilistler için devrim niteliğinde bir sanal deneme uygulamasıdır. Gelişmiş yapay zeka teknolojimiz, kullanıcıların kendi fotoğraflarını yükleyerek veya mevcut modellerimizden birini seçerek diledikleri kıyafeti saniyeler içinde dijital olarak denemelerine olanak tanır. Uygulama, kıyafetin vücuda tam oturmasını sağlayarak gerçekçi bir deneyim sunar ve kişiselleştirilmiş kombin önerileriyle stilinizi bir üst seviyeye taşımanıza yardımcı olur.',
-        imageUrl: 'https://images.unsplash.com/photo-1632773004171-02bc1c4a726a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjbG90aGluZyUyMGFwcHxlbnwwfHx8fDE3NjcyNzAxMjN8MA&ixlib=rb-4.1.0&q=80&w=1080',
-        iconType: 'giydir'
+        slug: 'nn',
+        title: 'NN',
+        category: 'Premium Yaşam & Çift Deneyimi',
+        shortDescription: 'Sinematik Ken-Burns geçişleri, güvenli PIN koruması ve lüks karanlık estetiğiyle çiftlere özel tasarlanmış seçkin ve gizli mobil deneyim.',
+        description: 'NN, çiftler arasındaki özel anları ve paylaşımları güvenle koruyan, şifrelenmiş depolama ve üst düzey tasarım estetiği sunan özel bir mobil uygulamadır. Kan kırmızısı ve derin siyah tonlarındaki sanatsal arayüzüyle premium bir dokunuş sağlar.',
+        imageUrl: '',
+        iconType: 'nn'
     },
     {
         id: 'portfolio-6',
-        slug: 'melodixor',
-        title: 'Melodixor',
-        category: 'Müzik Tanıma & Yapay Zeka',
-        description: 'Melodixor, müziği keşfetmenin sınırlarını zorlayan akıllı bir uygulamadır. Gürültülü bir konser ortamında çalan şarkıyı veya sadece aklınıza takılan bir melodiyi mırıldanarak anında tespit edebilirsiniz. Bununla da kalmaz, yenilikçi "Mood AI" özelliğimiz, o anki ruh halinize en uygun şarkıları ve çalma listelerini sizin için özenle seçer. Melodixor, müziğin duygusal gücünü parmaklarınızın ucuna getirir.',
-        imageUrl: 'https://images.unsplash.com/photo-1598965897529-f319a7725a35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bXVzaWMlMjBhcHB8ZW58MHx8fHwxNzY3MjcwMTIyfDA&ixlib=rb-4.1.0&q=80&w=1080',
-        iconType: 'melodixor'
+        slug: 'giydir',
+        title: 'Giydir',
+        category: 'Sanal Deneme & Yapay Zeka',
+        shortDescription: 'Gelişmiş AI destekli sanal kabin ile kıyafetleri fotoğraflarınız üzerinde gerçekçi şekilde deneyin ve kişisel stil önerileri alın.',
+        description: 'Giydir, moda tutkunları ve stilistler için devrim niteliğinde bir sanal deneme uygulamasıdır. Gelişmiş yapay zeka teknolojimiz, kullanıcıların diledikleri kıyafeti saniyeler içinde dijital olarak denemelerine olanak tanır.',
+        imageUrl: 'https://images.unsplash.com/photo-1632773004171-02bc1c4a726a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+        iconType: 'giydir'
     },
     {
         id: 'portfolio-7',
+        slug: 'melodixor',
+        title: 'Melodixor',
+        category: 'Müzik Tanıma & Yapay Zeka',
+        shortDescription: 'Mırıldanarak veya ortam sesinden anında şarkı tespiti yapın; Mood AI ile ruh halinize en uygun çalma listelerini keşfedin.',
+        description: 'Melodixor, müziği keşfetmenin sınırlarını zorlayan akıllı bir uygulamadır. Ortamdaki şarkıyı veya aklınıza takılan bir melodiyi anında tespit eder ve o anki ruh halinize en uygun parçaları seçer.',
+        imageUrl: 'https://images.unsplash.com/photo-1598965897529-f319a7725a35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+        iconType: 'melodixor'
+    },
+    {
+        id: 'portfolio-8',
         slug: 'mira-weather',
         title: 'Mira Weather',
         category: 'Hava Durumu & Minimalist Tasarım',
-        description: 'Mira Weather, hava durumu takibini bir sanat haline getiren, minimalist ve şık bir uygulamadır. Anlık ve doğru hava durumu tahminlerinin yanı sıra, kullanıcı dostu arayüzü ve sade tasarımıyla öne çıkar. Detaylı saatlik ve haftalık tahminler, kişiselleştirilebilir bildirimler ve zarif ana ekran widget\'ları ile gününüzü en doğru şekilde planlamanıza yardımcı olur. Karmaşadan uzak, sadece ihtiyacınız olan bilgi.',
-        imageUrl: 'https://images.unsplash.com/photo-1561484930-998b6a7b22e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d2VhdGhlciUyMGFwcHxlbnwwfHx8fDE3NjcyNzAxMjJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
+        shortDescription: 'Minimalist ve zarif arayüzle anlık hava durumu, saatlik tahminler ve kişiselleştirilmiş ana ekran widget deneyimi.',
+        description: 'Mira Weather, hava durumu takibini bir sanat haline getiren, minimalist ve şık bir uygulamadır. Anlık ve doğru tahminlerle gününüzü en doğru şekilde planlamanıza yardımcı olur.',
+        imageUrl: 'https://images.unsplash.com/photo-1561484930-998b6a7b22e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
         iconType: 'weather'
     }
 ];
@@ -46,18 +99,20 @@ const teamMembers = [
     {
         id: 'team-1',
         name: 'Şevval ATAŞ',
+        gender: 'female',
         titleKey: 'coFounder',
         roleKey: 'socialMediaManager',
         initials: 'ŞA',
-        image: 'images/sevval.png'
+        badge: 'Operations & Management'
     },
     {
         id: 'team-2',
         name: 'Mehmet Fahri EMER',
+        gender: 'male',
         titleKey: 'coFounder',
         roleKey: 'developer',
         initials: 'MFE',
-        image: 'images/fahri.png'
+        badge: 'Lead Tech & AI'
     }
 ];
 
@@ -67,11 +122,11 @@ const translations = {
         header: {
             portfolio: 'Portfolyo',
             techStack: 'Teknolojiler',
-            ourTeam: 'Ekibimiz',
-            projectGenerator: 'AI Tasarımcı'
+            ourTeam: 'Ekibimiz'
         },
         hero: {
-            title: ['GELECEĞİ KODLUYORUZ', 'console.log("MiraTech")'],
+            badge: 'YAPAY ZEKA & MOBİL İNOVASYON LABİ',
+            title: ['GELECEĞİ KODLUYORUZ', 'YAPAY ZEKA ÇÖZÜMLERİ', 'YENİLİKÇİ MOBİL DÜNYA'],
             subtitle: 'Geleceğin Mobil Deneyimlerini Şekillendiriyoruz.',
             description: 'Kullanıcıların sevdiği, güzel ve yüksek performanslı mobil uygulamalar geliştiren, ileri görüşlü bir yazılım firmasıyız.',
             button: 'Çalışmalarımızı Görün'
@@ -89,8 +144,8 @@ const translations = {
             description: 'Yenilikçi mobil çözümlerimizin arkasındaki tutkulu beyinler.',
             titles: { coFounder: 'Kurucu Ortak' },
             roles: {
-                socialMediaManager: 'Sosyal Medya Uzmanı, İçerik Üreticisi ve İdari Yönetici',
-                developer: 'Geliştirici'
+                socialMediaManager: 'Operasyon, Sosyal Medya, İletişim, Pazarlama ve İdari Yönetim',
+                developer: 'Yazılım Geliştirici & Sistem Mimarisi'
             }
         },
         aiTool: {
@@ -103,6 +158,8 @@ const translations = {
             keywordsPlaceholder: 'Örn: Emlak sitesi, Kahve dükkanı...',
             generateButton: 'Tasarımı Oluştur',
             generating: 'Tasarım Yapılıyor...',
+            copyCode: 'Kodu Kopyala',
+            copied: 'Kopyalandı!',
             outputPlaceholder: 'Bilgileri girin ve yapay zekanın sihrini izleyin...',
             logs: [
                 "Analiz ediliyor: {keywords}",
@@ -202,11 +259,11 @@ const translations = {
         header: {
             portfolio: 'Portfolio',
             techStack: 'Tech Stack',
-            ourTeam: 'Our Team',
-            projectGenerator: 'AI Designer'
+            ourTeam: 'Our Team'
         },
         hero: {
-            title: ['CODING THE FUTURE', 'console.log("MiraTech")'],
+            badge: 'AI & MOBILE INNOVATION LAB',
+            title: ['CODING THE FUTURE', 'AI-POWERED SOLUTIONS', 'INNOVATIVE MOBILE APPS'],
             subtitle: "Crafting Tomorrow's Mobile Experiences.",
             description: 'We are a forward-thinking software firm specializing in building beautiful, high-performance mobile applications that users love.',
             button: 'View Our Work'
@@ -224,8 +281,8 @@ const translations = {
             description: 'The passionate minds behind our innovative mobile solutions.',
             titles: { coFounder: 'Co-founder' },
             roles: {
-                socialMediaManager: 'Social Media Specialist, Content Creator and Administrative Manager',
-                developer: 'Developer'
+                socialMediaManager: 'Operations, Social Media, PR, Marketing & Administrative Management',
+                developer: 'Lead Software Engineer & System Architect'
             }
         },
         aiTool: {
@@ -238,6 +295,8 @@ const translations = {
             keywordsPlaceholder: 'e.g. Real estate site, Coffee shop...',
             generateButton: 'Generate Design',
             generating: 'Designing...',
+            copyCode: 'Copy Code',
+            copied: 'Copied!',
             outputPlaceholder: 'Enter details and watch the AI magic...',
             logs: [
                 "Analyzing: {keywords}",

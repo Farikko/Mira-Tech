@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr" class="dark scroll-smooth">
 
 <head>
@@ -8,20 +8,35 @@
     <meta name="description"
         content="Crafting Tomorrow's Mobile Experiences. We build beautiful, high-performance mobile applications.">
 
+    <!-- Security Headers & Meta Tags -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;800&display=swap"
         rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=10.0">
 </head>
 
 <body>
-    <!-- Premium Enhancements -->
-    <div class="digital-grain"></div>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress-bar" id="scroll-progress-bar" aria-hidden="true"></div>
+
+    <!-- Cosmic Aurora Background Mesh -->
+    <div class="aurora-container" aria-hidden="true">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
+
+    <!-- Premium Enhancements & Ambient Lighting -->
+    <div class="digital-grain" aria-hidden="true"></div>
+    <div class="ambient-glow" id="ambient-glow" aria-hidden="true"></div>
 
     <!-- Header -->
     <header id="header">
@@ -32,13 +47,18 @@
                 <a href="#portfolio" class="nav-link" data-i18n="header.portfolio">Portfolyo</a>
                 <a href="#tech-stack" class="nav-link" data-i18n="header.techStack">Teknolojiler</a>
                 <a href="#team" class="nav-link" data-i18n="header.ourTeam">Ekibimiz</a>
-                <a href="#ai-designer" class="nav-link" data-i18n="header.projectGenerator">AI Tasarımcı</a>
+                <button id="theme-toggle" class="theme-btn" aria-label="Change theme" title="Temayı Değiştir">
+                    <span id="theme-icon">🔮</span>
+                </button>
                 <button id="lang-toggle" class="lang-btn" aria-label="Change language">
                     <span id="lang-icon">🇬🇧</span>
                 </button>
             </nav>
 
             <div class="mobile-nav-controls">
+                <button id="theme-toggle-mobile" class="theme-btn" aria-label="Change theme">
+                    <span id="theme-icon-mobile">🔮</span>
+                </button>
                 <button id="lang-toggle-mobile" class="lang-btn" aria-label="Change language">
                     <span id="lang-icon-mobile">🇬🇧</span>
                 </button>
@@ -53,16 +73,25 @@
             <a href="#portfolio" class="mobile-nav-link" data-i18n="header.portfolio">Portfolyo</a>
             <a href="#tech-stack" class="mobile-nav-link" data-i18n="header.techStack">Teknolojiler</a>
             <a href="#team" class="mobile-nav-link" data-i18n="header.ourTeam">Ekibimiz</a>
-            <a href="#ai-designer" class="mobile-nav-link" data-i18n="header.projectGenerator">AI Tasarımcı</a>
         </div>
     </header>
 
     <main>
-        <!-- Hero Section - Neural Network Background -->
+        <!-- Hero Section - Live Particle Canvas & Holographic Halo -->
         <section id="hero" class="hero">
-            <div class="neural-network"></div>
+            <canvas id="hero-canvas" class="hero-canvas" aria-hidden="true"></canvas>
+            <div class="hero-cyber-grid" aria-hidden="true"></div>
             <div class="container">
-                <h1 class="hero-title" data-i18n="hero.title">GELECEĞİ KODLA</h1>
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    <span data-i18n="hero.badge">YAPAY ZEKA & MOBİL İNOVASYON LABİ</span>
+                </div>
+                <div class="hero-title-container">
+                    <div class="hero-spotlight-halo" aria-hidden="true"></div>
+                    <div class="hero-matrix-glow" aria-hidden="true"></div>
+                    <h1 class="hero-title" data-i18n="hero.title">GELECEĞİ KODLA</h1>
+                    <div class="hero-laser-line" aria-hidden="true"></div>
+                </div>
                 <p class="hero-description" data-i18n="hero.description">Yapay zeka destekli, ölçeklenebilir ve
                     yenilikçi yazılım çözümleri</p>
                 <a href="#portfolio" class="btn btn-neon">
@@ -160,6 +189,9 @@
                                 <span class="dot green"></span>
                             </div>
                             <span class="editor-title">app.js</span>
+                            <button type="button" class="editor-run-btn" id="run-code-btn">
+                                <span class="play-icon">▶</span> RUN
+                            </button>
                         </div>
                         <div class="editor-content">
                             <pre><code><span class="keyword">const</span> <span class="function">analyzeData</span> = <span class="keyword">async</span> (<span class="param">data</span>) => {
@@ -167,6 +199,7 @@
   <span class="keyword">return</span> <span class="variable">result</span>.<span class="property">insights</span>;
 };</code></pre>
                         </div>
+                        <div class="editor-terminal" id="editor-terminal" style="display: none;"></div>
                     </div>
                 </div>
             </div>
@@ -180,6 +213,11 @@
                     <p data-i18n="portfolio.description">Tasarladığımız ve geliştirdiğimiz mobil uygulamalardan
                         bir seçki.
                     </p>
+                    <div class="portfolio-filter-tabs" id="portfolio-tabs">
+                        <button type="button" class="portfolio-tab active" data-filter="all">Tümü</button>
+                        <button type="button" class="portfolio-tab" data-filter="ai">Yapay Zeka</button>
+                        <button type="button" class="portfolio-tab" data-filter="mobile">Mobil Uygulama</button>
+                    </div>
                 </div>
                 <div id="portfolio-grid" class="portfolio-grid"></div>
             </div>
@@ -209,124 +247,6 @@
                 <div id="team-grid" class="team-grid"></div>
             </div>
         </section>
-
-        <!-- AI Designer Section -->
-        <section id="ai-designer" class="ai-tool ai-designer">
-            <div class="container">
-                <div class="section-header">
-                    <h2 data-i18n="aiTool.title">Yapay Zeka Web Tasarım Simülatörü</h2>
-                    <p data-i18n="aiTool.description">Hayalinizdeki web sitesini tarif edin, MiraTech AI anında
-                        görselleştirsin.</p>
-                </div>
-                <div class="ai-tool-container">
-                    <div class="ai-form-card">
-                        <h3 data-i18n="aiTool.formTitle">Web Sitenizi Tarif Edin</h3>
-                        <form id="ai-form">
-                            <div class="form-group matrix-input">
-                                <input type="text" id="project-name" required placeholder=" "
-                                    data-i18n-placeholder="aiTool.projectNamePlaceholder">
-                                <label for="project-name" data-i18n="aiTool.projectNameLabel">İşletme Adı veya
-                                    Proje</label>
-                                <span class="focus-border"></span>
-                            </div>
-                            <div class="form-group matrix-input">
-                                <textarea id="keywords" rows="4" required placeholder=" "
-                                    data-i18n-placeholder="aiTool.keywordsPlaceholder"></textarea>
-                                <label for="keywords" data-i18n="aiTool.keywordsLabel">Ne Tür Bir Site
-                                    İstiyorsunuz?</label>
-                                <span class="focus-border"></span>
-                            </div>
-                            <button type="submit" class="btn btn-accent">
-                                <span id="generate-btn-text" data-i18n="aiTool.generateButton">Tasarımı Oluştur</span>
-                                <div class="btn-glow"></div>
-                            </button>
-                        </form>
-                    </div>
-                    <div class="ai-output-card designer-preview">
-                        <div class="browser-mockup">
-                            <div class="browser-header">
-                                <div class="browser-dots">
-                                    <span class="dot"></span>
-                                    <span class="dot"></span>
-                                    <span class="dot"></span>
-                                </div>
-                                <div class="browser-address">www.miratech-ai.com/preview</div>
-                            </div>
-                            <div id="ai-output" class="browser-body">
-                                <div class="placeholder-content">
-                                    <div class="ai-loading-overlay" id="ai-loader" style="display: none;">
-                                        <div class="matrix-loader"></div>
-                                        <div class="status-logs" id="status-logs"></div>
-                                    </div>
-                                    <div class="initial-message">
-                                        <span class="icon">✨</span>
-                                        <p data-i18n="aiTool.outputPlaceholder">Bilgileri girin ve yapay zekanın
-                                            sihrini
-                                            izleyin...</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Application Section -->
-            <section id="application" class="application">
-                <div class="container">
-                    <div class="application-card">
-                        <div class="section-header">
-                            <span class="badge" data-i18n="application.badge">Başvuru</span>
-                            <h2 data-i18n="application.title">Geleceği Birlikte İnşa Edelim</h2>
-                            <p data-i18n="application.description">Hayalinizdeki projeyi hayata geçirmek için ilk adımı
-                                atın.
-                            </p>
-                        </div>
-
-                        <form id="application-form" class="application-form"
-                            action="https://formsubmit.co/emrfahri@outlook.com" method="POST">
-                            <!-- FormSubmit Configuration -->
-                            <input type="hidden" name="_subject" value="🚀 Yeni Başvuru - MiraTech">
-                            <input type="hidden" name="_cc" value="sevvalatas@miratech.tech">
-                            <input type="hidden" name="_captcha" value="false">
-                            <input type="hidden" name="_template" value="table">
-                            <input type="text" name="_honey" style="display:none">
-
-                            <div class="form-grid">
-                                <!-- Name -->
-                                <div class="form-group matrix-input">
-                                    <input type="text" id="name" name="name" required placeholder=" "
-                                        data-i18n-placeholder="application.nameLabel">
-                                    <label for="name" data-i18n="application.nameLabel">Adınız Soyadınız</label>
-                                    <span class="focus-border"></span>
-                                </div>
-
-                                <!-- Email -->
-                                <div class="form-group matrix-input">
-                                    <input type="email" id="email" name="email" required placeholder=" "
-                                        data-i18n-placeholder="application.emailLabel">
-                                    <label for="email" data-i18n="application.emailLabel">E-posta Adresiniz</label>
-                                    <span class="focus-border"></span>
-                                </div>
-
-                                <!-- Business Name -->
-                                <div class="form-group full-width matrix-input">
-                                    <input type="text" id="business" name="business" placeholder=" "
-                                        data-i18n-placeholder="application.companyLabel">
-                                    <label for="business" data-i18n="application.companyLabel">İşletme Adı
-                                        (Opsiyonel)</label>
-                                    <span class="focus-border"></span>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn-accent" id="submit-btn">
-                                <span data-i18n="application.submitButton">Başvuruyu Gönder</span>
-                                <div class="btn-glow"></div>
-                            </button>
-                            <div id="form-status" class="form-status"></div>
-                        </form>
-                    </div>
-                </div>
-            </section>
     </main>
 
     <!-- Footer -->
@@ -335,19 +255,19 @@
             <div class="footer-content">
                 <div class="footer-copy" data-i18n="footer.rights">Tüm hakları saklıdır.</div>
                 <div class="footer-social">
-                    <a href="https://instagram.com/miratech.tech" target="_blank" aria-label="Instagram">
+                    <a href="https://instagram.com/miratech.tech" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                         <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
                             <path
                                 d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                         </svg>
                     </a>
-                    <a href="#" aria-label="GitHub">
+                    <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                         <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
                             <path
                                 d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                         </svg>
                     </a>
-                    <a href="#" aria-label="LinkedIn">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                         <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
                             <path
                                 d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
@@ -355,12 +275,11 @@
                     </a>
                 </div>
             </div>
-        </div>
     </footer>
 
     <!-- Scripts -->
-    <script src="data.js"></script>
-    <script src="script.js"></script>
+    <script src="data.js?v=10.0"></script>
+    <script src="script.js?v=10.0"></script>
 </body>
 
 </html>

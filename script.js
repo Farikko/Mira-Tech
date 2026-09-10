@@ -1,25 +1,41 @@
 // Global State
 let currentLang = 'tr';
 
+// Security Helper: HTML Sanitization against DOM XSS
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
 });
 
 function initializeApp() {
-    // Initialize language
+    // Initialize language & theme
     updateLanguage();
+    initThemeSwitcher();
 
     // Render dynamic content
-    renderPortfolio();
+    renderPortfolio('all');
     renderTechStack();
     renderTeam();
 
-    // Setup event listeners
+    // Setup event listeners & interactive features
     setupEventListeners();
+    initPortfolioFilter();
+    initCodeRunner();
 
-    // Setup smooth scrolling
+    // Setup smooth scrolling, progress & ambient glow
     setupSmoothScroll();
+    initScrollProgress();
+    initAmbientGlow();
 
     // Setup header scroll effect
     setupHeaderScroll();
@@ -29,6 +45,9 @@ function initializeApp() {
 
     // Start Code Editor Animation
     startCodeTypewriter();
+
+    // 🌟 Start Hero Particle Network
+    initParticleCanvas();
 }
 
 function setupEventListeners() {
@@ -51,9 +70,6 @@ function setupEventListeners() {
             document.getElementById('mobile-menu-btn').classList.remove('active');
         });
     });
-
-    // AI Form
-    document.getElementById('ai-form').addEventListener('submit', handleAIFormSubmit);
 }
 
 function toggleLanguage() {
@@ -70,7 +86,7 @@ function updateLanguage() {
         const value = getNestedValue(t, key);
         if (value) {
             if (key === 'hero.title') {
-                typeWriter(element, value);
+                startPhraseRotator(element, value);
             } else {
                 element.textContent = value;
             }
@@ -132,23 +148,103 @@ function setupHeaderScroll() {
         const currentScroll = window.pageYOffset;
 
         if (currentScroll > 10) {
-            header.style.background = 'hsla(222.2, 84%, 4.9%, 0.95)';
-            header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.3)';
+            header.style.background = 'hsla(var(--background), 0.85)';
+            header.style.backdropFilter = 'blur(20px)';
+            header.style.webkitBackdropFilter = 'blur(20px)';
+            header.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.5)';
+            header.style.borderBottom = '1px solid rgba(255, 255, 255, 0.08)';
         } else {
-            header.style.background = 'hsla(222.2, 84%, 4.9%, 0.8)';
+            header.style.background = 'hsla(var(--background), 0.6)';
             header.style.boxShadow = 'none';
+            header.style.borderBottom = '1px solid rgba(255, 255, 255, 0.05)';
         }
 
         lastScroll = currentScroll;
     });
 }
 
-function renderPortfolio() {
+function renderPortfolio(filter = 'all') {
     const grid = document.getElementById('portfolio-grid');
-    grid.innerHTML = projects.map(project => {
+    if (!grid) return;
+
+    const filtered = projects.filter(project => {
+        if (filter === 'all') return true;
+        if (filter === 'ai') return project.category.toLowerCase().includes('yapay zeka') || project.category.toLowerCase().includes('ai');
+        if (filter === 'mobile') return true; // all 3 are mobile apps
+        return true;
+    });
+
+    grid.innerHTML = filtered.map(project => {
         let mediaContent = '';
 
-        if (project.iconType === 'giydir') {
+        if (project.iconType === 'aguvi') {
+            mediaContent = `
+                <div class="project-icon-container project-icon-aguvi">
+                    <div class="icon-aguvi">
+                        <div class="baby-cradle">
+                            <div class="cradle-arc"></div>
+                            <div class="cradle-mattress"></div>
+                            <div class="mobile-star s1">★</div>
+                            <div class="mobile-star s2">✦</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (project.iconType === 'shoplive') {
+            mediaContent = `
+                <div class="project-icon-container project-icon-shoplive">
+                    <div class="icon-shoplive">
+                        <div class="live-stream-badge"><span class="live-dot"></span>LIVE</div>
+                        <div class="bag-body">
+                            <div class="bag-handle"></div>
+                            <div class="bag-tag">⚡</div>
+                        </div>
+                        <div class="floating-heart h1">♥</div>
+                        <div class="floating-heart h2">♥</div>
+                    </div>
+                </div>
+            `;
+        } else if (project.iconType === 'kent21') {
+            mediaContent = `
+                <div class="project-icon-container project-icon-kent21">
+                    <div class="icon-kent21">
+                        <div class="city-beacon">
+                            <div class="beacon-wave w1"></div>
+                            <div class="beacon-wave w2"></div>
+                            <div class="city-pin">
+                                <div class="pin-inner"></div>
+                            </div>
+                        </div>
+                        <div class="city-skyline"></div>
+                    </div>
+                </div>
+            `;
+        } else if (project.iconType === 'kundir') {
+            mediaContent = `
+                <div class="project-icon-container project-icon-kundir">
+                    <div class="icon-kundir">
+                        <div class="ai-chat-bubble">
+                            <div class="chat-dot cd1"></div>
+                            <div class="chat-dot cd2"></div>
+                            <div class="chat-dot cd3"></div>
+                            <div class="chat-sparkle">✦</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (project.iconType === 'nn') {
+            mediaContent = `
+                <div class="project-icon-container project-icon-nn">
+                    <div class="icon-nn">
+                        <div class="passcode-ring">
+                            <div class="ring-lock"></div>
+                            <div class="ring-pulse"></div>
+                            <div class="ring-glow"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (project.iconType === 'giydir') {
             mediaContent = `
                 <div class="project-icon-container">
                     <div class="icon-giydir">
@@ -182,71 +278,25 @@ function renderPortfolio() {
                 </div>
             `;
         } else {
-            mediaContent = `<img src="${project.imageUrl}" alt="${project.title}" loading="lazy">`;
+            mediaContent = `
+                <div class="portfolio-image-wrapper">
+                    <img src="${project.imageUrl}" alt="${project.title}" loading="lazy">
+                </div>
+            `;
         }
 
+        const shortDesc = escapeHTML(project.shortDescription || project.description.substring(0, 110) + '...');
+
         return `
-        <div class="portfolio-card" onclick="showProjectDetail('${project.slug}')">
+        <div class="portfolio-card">
             ${mediaContent}
             <div class="portfolio-card-content">
-                <h3>${project.title}</h3>
-                <p class="category">${project.category}</p>
+                <span class="category">${escapeHTML(project.category)}</span>
+                <h3>${escapeHTML(project.title)}</h3>
+                <p class="project-summary">${shortDesc}</p>
             </div>
         </div>
     `}).join('');
-}
-
-function showProjectDetail(slug) {
-    const project = projects.find(p => p.slug === slug);
-    if (!project) return;
-
-    // Create modal
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.9);
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-        overflow-y: auto;
-    `;
-
-    modal.innerHTML = `
-        <div style="max-width: 1000px; width: 100%; background: hsl(var(--card)); border-radius: var(--radius); padding: 2rem; position: relative;">
-            <button onclick="this.closest('[style*=fixed]').remove()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: hsl(var(--foreground)); font-size: 2rem; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-center; border-radius: 50%; transition: background 0.3s;" onmouseover="this.style.background='hsl(var(--muted))'" onmouseout="this.style.background='none'">×</button>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;">
-                <div>
-                    <h1 style="font-size: 2.5rem; color: hsl(var(--primary)); margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">${project.title}</h1>
-                    <p style="font-size: 1.125rem; color: hsl(var(--muted-foreground)); margin-bottom: 1.5rem;">${project.category}</p>
-                    <p style="line-height: 1.8; color: hsla(var(--foreground), 0.9);">${project.description}</p>
-                </div>
-                <div>
-                    <img src="${project.imageUrl}" alt="${project.title}" style="width: 100%; border-radius: var(--radius); aspect-ratio: 9/16; object-fit: cover;">
-                </div>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    // Close on background click
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.remove();
-        }
-    });
-
-    // Close on Escape key
-    const handleEscape = (e) => {
-        if (e.key === 'Escape') {
-            modal.remove();
-            document.removeEventListener('keydown', handleEscape);
-        }
-    };
-    document.addEventListener('keydown', handleEscape);
 }
 
 function renderTechStack() {
@@ -341,225 +391,128 @@ function renderTechStack() {
                     </div>`;
                 break;
             default:
-                iconHtml = `<span class="icon">ğŸ’»</span>`;
+                iconHtml = `<span class="icon">💻</span>`;
         }
 
         return `
         <div class="tech-card">
             ${iconHtml}
-            <h3>${tech.name}</h3>
+            <h3>${escapeHTML(tech.name)}</h3>
         </div>
     `}).join('');
 }
 
 function renderTeam() {
     const grid = document.getElementById('team-grid');
+    if (!grid) return;
     const t = translations[currentLang].team;
 
-    grid.innerHTML = teamMembers.map(member => `
-        <div class="team-card">
-            <div class="team-avatar">
-                ${member.image ? `<img src="${member.image}" alt="${member.name}">` : member.initials}
-            </div>
-            <h3>${member.name}</h3>
-            <p class="title">${t.titles[member.titleKey]}</p>
-            <p class="role">${t.roles[member.roleKey]}</p>
-        </div>
-    `).join('');
-}
-
-async function handleAIFormSubmit(e) {
-    e.preventDefault();
-
-    const projectName = document.getElementById('project-name').value;
-    const keywords = document.getElementById('keywords').value.toLowerCase();
-
-    const output = document.getElementById('ai-output');
-    const btn = document.querySelector('.btn-accent');
-    const btnText = document.getElementById('generate-btn-text');
-    const loader = document.getElementById('ai-loader');
-    const logsContainer = document.getElementById('status-logs');
-    const addressBar = document.querySelector('.browser-address');
-    const t = translations[currentLang].aiTool;
-
-    // Show loading state
-    btn.disabled = true;
-    btn.classList.add('generating');
-    btnText.textContent = t.generating || 'Tasarım Yapılıyor...';
-    loader.style.display = 'flex';
-    logsContainer.innerHTML = '';
-
-    // Initial address bar reset
-    addressBar.textContent = '...';
-
-    const url = projectName.toLowerCase().replace(/\s/g, '-');
-    const logs = t.logs.map(log =>
-        log.replace('{keywords}', keywords)
-            .replace('{url}', url)
-    );
-
-    // Multi-tasking: Address typing + Logs
-    const typeAddressPromise = typeAddress(addressBar, `www.${projectName.toLowerCase().replace(/\s/g, '-')}.com/preview`);
-
-    // Status log simulation
-    for (let log of logs) {
-        const entry = document.createElement('div');
-        entry.className = 'log-entry';
-        entry.textContent = '> ' + log;
-        logsContainer.appendChild(entry);
-        await new Promise(r => setTimeout(r, 600 + Math.random() * 400));
-        logsContainer.scrollTop = logsContainer.scrollHeight;
-    }
-
-    await typeAddressPromise;
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    // Generate Mockup Structure
-    let template = "";
-    if (keywords.includes('emlak') || keywords.includes('real estate')) {
-        template = getRealEstateTemplate(projectName);
-    } else if (keywords.includes('kahve') || keywords.includes('coffee') || keywords.includes('kafe')) {
-        template = getCoffeeTemplate(projectName);
-    } else if (keywords.includes('spor') || keywords.includes('gym') || keywords.includes('antrenman')) {
-        template = getGymTemplate(projectName);
-    } else if (keywords.includes('market') || keywords.includes('ticaret') || keywords.includes('shop')) {
-        template = getEcommerceTemplate(projectName);
-    } else if (keywords.includes('yemek') || keywords.includes('restoran') || keywords.includes('restaurant')) {
-        template = getRestaurantTemplate(projectName);
-    } else if (keywords.includes('portfolyo') || keywords.includes('portfolio') || keywords.includes('kişisel')) {
-        template = getPortfolioTemplate(projectName);
-    } else {
-        template = getDefaultTemplate(projectName);
-    }
-
-    // Show result
-    loader.style.display = 'none';
-    output.innerHTML = template;
-    btn.disabled = false;
-    btn.classList.remove('generating');
-    btnText.textContent = t.generateButton;
-
-    // Smooth scroll to output
-    output.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-async function typeAddress(element, text) {
-    element.textContent = '';
-    for (let i = 0; i < text.length; i++) {
-        element.textContent += text.charAt(i);
-        await new Promise(r => setTimeout(r, 50));
-    }
-}
-
-function getRealEstateTemplate(name) {
-    const t = translations[currentLang].aiTool.templates.realEstate;
-    return `
-        <div class="preview-site">
-            <nav class="preview-nav">
-                <div style="font-weight:bold; color:#2c3e50;">🏠 ${name} Real Estate</div>
-                <div style="font-size:0.8rem; display:flex; gap:10px;"><span>${t.nav[0]}</span><span>${t.nav[1]}</span><span>${t.nav[2]}</span></div>
-            </nav>
-            <div class="preview-hero" style="background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80') center/cover;">
-                <h1 style="color:white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-size:1.5rem;">${t.hero}</h1>
-                <div style="background:white; padding:10px; margin-top:20px; border-radius:4px; font-size:0.8rem; color:#999; display:inline-block; width:80%;">${t.search}</div>
-            </div>
-            <div class="preview-grid">
-                ${[1, 2, 3].map(i => `
-                    <div class="preview-card">
-                        <div class="preview-image-box" style="background:#ddd;">🏡 ${t.cardLabel} #${i}</div>
-                        <p style="font-weight:bold; margin:0;">Modern Villa</p>
-                        <p style="font-size:0.75rem; color:#27ae60;">4.500.000 TL</p>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    `;
-}
-
-function getCoffeeTemplate(name) {
-    const t = translations[currentLang].aiTool.templates.coffee;
-    return `
-        <div class="preview-site" style="background:#fdfcf0;">
-            <nav class="preview-nav" style="background:#3e2723; color:white;">
-                <div style="font-weight:bold;">☕ ${name}</div>
-                <div style="font-size:0.8rem; display:flex; gap:10px;"><span>${t.nav[0]}</span><span>${t.nav[1]}</span></div>
-            </nav>
-            <div class="preview-hero" style="background:#5d4037; color:white; padding:3rem 1rem;">
-                <h1 style="font-size:1.4rem;">${t.hero}</h1>
-                <button style="background:#d7ccc8; border:none; padding:8px 15px; margin-top:15px; border-radius:20px; font-size:0.8rem;">${t.button}</button>
-            </div>
-            <div style="padding:1.5rem; display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
-                <div class="preview-card" style="text-align:center;">
-                    <div style="font-size:2rem;">☕</div>
-                    <p style="font-weight:bold;">Espresso</p>
-                    <p style="font-size:0.7rem;">${t.espresso}</p>
-                </div>
-                <div class="preview-card" style="text-align:center;">
-                    <div style="font-size:2rem;">🥛</div>
-                    <p style="font-weight:bold;">Latte</p>
-                    <p style="font-size:0.7rem;">${t.latte}</p>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function getGymTemplate(name) {
-    const t = translations[currentLang].aiTool.templates.gym;
-    return `
-        <div class="preview-site" style="background:#111; color:white;">
-            <div style="padding:1.5rem; text-align:center; background:#ff4444;">
-                <h1 style="font-size:1.5rem; font-weight:900;">🔥 ${name.toUpperCase()} CORE</h1>
-            </div>
-            <div class="preview-hero" style="background: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80') center/cover; height:200px; display:flex; align-items:center; justify-content:center;">
-                <div style="background:rgba(0,0,0,0.7); padding:1rem; border-left:4px solid #ff4444;">
-                    <p style="margin:0; font-weight:bold;">${t.hero}</p>
-                </div>
-            </div>
-            <div style="padding:1.5rem;">
-                <div style="background:#222; padding:1rem; border-radius:8px; margin-bottom:1rem;">
-                    <p style="margin:0; font-size:0.8rem; color:#ff4444;">${t.badge}</p>
-                    <p style="margin:5px 0; font-weight:bold;">${t.program}</p>
-                    <button style="background:#ff4444; color:white; border:none; width:100%; padding:8px; border-radius:4px; margin-top:10px; font-weight:bold;">${t.button}</button>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function getDefaultTemplate(name) {
-    const t = translations[currentLang].aiTool.templates.default;
-    return `
-        <div class="preview-site">
-            <nav class="preview-nav">
-                <div style="font-weight:bold;">✨ ${name}</div>
-            </nav>
-            <div class="preview-hero">
-                <h1>${t.hero}</h1>
-                <p>${t.subtitle}</p>
-            </div>
-            <div class="preview-grid">
-                <div class="preview-card">${t.feature} 1</div>
-                <div class="preview-card">${t.feature} 2</div>
-                <div class="preview-card">${t.feature} 3</div>
-            </div>
-        </div>
-    `;
-}
-
-function generateDescription(projectName, techStack, keywords) {
-    const templates = {
-        tr: [
-            `${projectName}, kullanıcıların ihtiyaçlarını karşılamak için tasarlanmış yenilikçi bir mobil uygulamadır. ${techStack} teknolojileri kullanılarak geliştirilmiş olan uygulama, ${keywords} özellikleriyle öne çıkar. Modern ve kullanıcı dostu arayüzü sayesinde, kullanıcılar sorunsuz bir deneyim yaşar. Uygulama, yüksek performans ve güvenilirlik sunarak, kullanıcıların günlük hayatlarını kolaylaştırmayı amaçlar.`
-        ],
-        en: [
-            `${projectName} is an innovative mobile application designed to meet users' needs. Developed using ${techStack} technologies, the app stands out with its ${keywords} features. Thanks to its modern and user-friendly interface, users experience a seamless journey. The application aims to simplify users' daily lives by offering high performance and reliability.`,
-            `${projectName} represents the future of mobile applications. Built with cutting-edge ${techStack} technologies, it delivers ${keywords} experiences that users love. Our team has crafted every detail to ensure maximum user satisfaction and engagement. The app combines powerful functionality with elegant design, making it a must-have tool for modern users.`
-        ]
+    // Elegant vector avatars tailored by gender & role
+    const getAvatarIcon = (gender) => {
+        if (gender === 'female') {
+            // Sleek female tech/creative avatar icon with glowing holographic visor
+            return `
+                <svg viewBox="0 0 100 100" class="team-avatar-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="48" fill="url(#female-glow-grad)" stroke="url(#female-border-grad)" stroke-width="2"/>
+                    <!-- Hair Back/Flow -->
+                    <path d="M30 42C30 25 40 18 50 18C60 18 70 25 70 42C70 54 68 62 67 66C63 56 61 54 61 54C61 54 39 54 39 54C39 54 37 56 33 66C32 62 30 54 30 42Z" fill="#F472B6" fill-opacity="0.3"/>
+                    <!-- Head & Face -->
+                    <ellipse cx="50" cy="42" rx="14" ry="17" fill="#FCE7F3"/>
+                    <!-- Hair Front Styling -->
+                    <path d="M34 38C34 26 41 20 50 20C59 20 66 26 66 38C66 32 62 25 50 25C38 25 34 32 34 38Z" fill="#EC4899"/>
+                    <path d="M34 38C37 32 44 30 50 33C56 30 63 32 66 38C63 35 57 34 50 36C43 34 37 35 34 38Z" fill="#BE185D"/>
+                    <!-- Tech Visor / Glasses Accent -->
+                    <rect x="39" y="38" width="22" height="7" rx="3.5" fill="#38BDF8" fill-opacity="0.75"/>
+                    <line x1="41" y1="41.5" x2="59" y2="41.5" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round"/>
+                    <!-- Neck -->
+                    <rect x="46" y="56" width="8" height="9" rx="3" fill="#FBCFE8"/>
+                    <!-- Shoulders / Cyber Suit -->
+                    <path d="M25 84C25 71 36 63 50 63C64 63 75 71 75 84V86H25V84Z" fill="url(#suit-female-grad)"/>
+                    <path d="M42 63L50 72L58 63" stroke="#F472B6" stroke-width="2" stroke-linecap="round"/>
+                    <!-- Tech Neon Accents -->
+                    <circle cx="50" cy="76" r="2.5" fill="#38BDF8"/>
+                    <defs>
+                        <radialGradient id="female-glow-grad" cx="50%" cy="40%" r="60%">
+                            <stop offset="0%" stop-color="#831843" stop-opacity="0.6"/>
+                            <stop offset="100%" stop-color="#0F172A" stop-opacity="0.95"/>
+                        </radialGradient>
+                        <linearGradient id="female-border-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#F472B6"/>
+                            <stop offset="100%" stop-color="#6366F1"/>
+                        </linearGradient>
+                        <linearGradient id="suit-female-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#831843"/>
+                            <stop offset="50%" stop-color="#4C1D95"/>
+                            <stop offset="100%" stop-color="#1E1B4B"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            `;
+        } else {
+            // Sleek male tech/developer avatar icon with cyber developer glasses
+            return `
+                <svg viewBox="0 0 100 100" class="team-avatar-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="48" fill="url(#male-glow-grad)" stroke="url(#male-border-grad)" stroke-width="2"/>
+                    <!-- Short Modern Tech Hair Cut -->
+                    <path d="M33 38C33 24 41 18 50 18C59 18 67 24 67 38C67 33 65 24 50 24C35 24 33 33 33 38Z" fill="#38BDF8"/>
+                    <path d="M32 37C32 23 40 17 50 17C60 17 68 23 68 37C64 26 56 22 50 22C44 22 36 26 32 37Z" fill="#0284C7"/>
+                    <!-- Head & Face -->
+                    <ellipse cx="50" cy="42" rx="14.5" ry="16.5" fill="#E0F2FE"/>
+                    <!-- Tech Cyber Glasses -->
+                    <rect x="37" y="37" width="26" height="8" rx="3" fill="#0369A1" fill-opacity="0.85"/>
+                    <line x1="39" y1="41" x2="61" y2="41" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/>
+                    <circle cx="43" cy="41" r="1.5" fill="#FFFFFF"/>
+                    <circle cx="57" cy="41" r="1.5" fill="#FFFFFF"/>
+                    <!-- Neck -->
+                    <rect x="46" y="56" width="8" height="9" rx="3" fill="#BAE6FD"/>
+                    <!-- Shoulders / Cyber Suit -->
+                    <path d="M23 84C23 70 35 63 50 63C65 63 77 70 77 84V86H23V84Z" fill="url(#suit-male-grad)"/>
+                    <path d="M40 63L50 74L60 63" stroke="#38BDF8" stroke-width="2" stroke-linecap="round"/>
+                    <!-- Developer Console Code Mark < > -->
+                    <path d="M46 79L43 81L46 83" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M54 79L57 81L54 83" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <radialGradient id="male-glow-grad" cx="50%" cy="40%" r="60%">
+                            <stop offset="0%" stop-color="#0369A1" stop-opacity="0.6"/>
+                            <stop offset="100%" stop-color="#020617" stop-opacity="0.95"/>
+                        </radialGradient>
+                        <linearGradient id="male-border-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#38BDF8"/>
+                            <stop offset="100%" stop-color="#6366F1"/>
+                        </linearGradient>
+                        <linearGradient id="suit-male-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#0369A1"/>
+                            <stop offset="50%" stop-color="#1E1B4B"/>
+                            <stop offset="100%" stop-color="#090D16"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            `;
+        }
     };
 
-    const currentTemplates = templates[currentLang] || templates['tr'];
-    return currentTemplates[Math.floor(Math.random() * currentTemplates.length)];
+    grid.innerHTML = teamMembers.map(member => {
+        const safeName = escapeHTML(member.name);
+        const initials = escapeHTML(member.initials || member.name.substring(0, 2).toUpperCase());
+        const gender = member.gender || 'male';
+        const genderIcon = getAvatarIcon(gender);
+        const badgeLabel = member.badge ? `<span class="team-badge team-badge-${gender}">${escapeHTML(member.badge)}</span>` : '';
+
+        return `
+        <div class="team-card team-card-${gender}">
+            <div class="team-avatar-wrapper">
+                <div class="team-avatar-halo" aria-hidden="true"></div>
+                <div class="team-avatar">
+                    ${genderIcon}
+                </div>
+            </div>
+            ${badgeLabel}
+            <h3>${safeName}</h3>
+            <p class="title">${t.titles[member.titleKey] || ''}</p>
+            <p class="role">${t.roles[member.roleKey] || ''}</p>
+        </div>
+        `;
+    }).join('');
 }
 
 // Add fade-in animation to sections on scroll
@@ -587,59 +540,200 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Typewriter Effect
-// Rotating Typewriter Effect
-let typewriterTimeout;
+// ============================================================
+// 🌟 Hero Living Particle & Constellation Engine
+// ============================================================
+function initParticleCanvas() {
+    const canvas = document.getElementById('hero-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const heroSection = document.getElementById('hero');
 
-function typeWriter(element, textOrArray) {
-    if (typewriterTimeout) clearTimeout(typewriterTimeout);
+    const CONFIG = {
+        count: 105,
+        maxDist: 165,
+        mouseRadius: 180,
+        colors: [
+            { r: 56,  g: 189, b: 248 }, // Sky Cyan
+            { r: 99,  g: 102, b: 241 }, // Electric Indigo
+            { r: 168, g: 85,  b: 247 }, // Violet Accent
+            { r: 224, g: 242, b: 254 }  // Ice Glow White
+        ]
+    };
 
-    element.classList.add('typewriter-cursor');
+    let W = 0, H = 0, particles = [];
+    let mouse = { x: -9999, y: -9999, active: false };
 
-    if (typeof textOrArray === 'string') {
-        element.textContent = '';
-        let i = 0;
-        function type() {
-            if (i < textOrArray.length) {
-                element.textContent += textOrArray.charAt(i);
-                i++;
-                typewriterTimeout = setTimeout(type, 100);
+    function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = Math.max(window.innerHeight, heroSection ? heroSection.offsetHeight : 700);
+    }
+    resize();
+    window.addEventListener('resize', () => {
+        resize();
+        build();
+    });
+
+    if (heroSection) {
+        heroSection.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+            mouse.active = true;
+        });
+
+        heroSection.addEventListener('mouseleave', () => {
+            mouse.x = -9999;
+            mouse.y = -9999;
+            mouse.active = false;
+        });
+
+        heroSection.addEventListener('touchmove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const t = e.touches[0];
+            mouse.x = t.clientX - rect.left;
+            mouse.y = t.clientY - rect.top;
+            mouse.active = true;
+        }, { passive: true });
+
+        heroSection.addEventListener('touchend', () => {
+            mouse.x = -9999;
+            mouse.y = -9999;
+            mouse.active = false;
+        });
+    }
+
+    function build() {
+        particles = [];
+        for (let i = 0; i < CONFIG.count; i++) {
+            const col = CONFIG.colors[Math.floor(Math.random() * CONFIG.colors.length)];
+            const speed = 0.25 + Math.random() * 0.55;
+            const angle = Math.random() * Math.PI * 2;
+            particles.push({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                baseR: 1.8 + Math.random() * 2.4,
+                color: col,
+                pulse: Math.random() * Math.PI * 2,
+                pulseSpeed: 0.02 + Math.random() * 0.03
+            });
+        }
+    }
+    build();
+
+    function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+
+            // Subtle mouse gravity/repulsion
+            if (mouse.active) {
+                const dx = p.x - mouse.x;
+                const dy = p.y - mouse.y;
+                const distM = Math.sqrt(dx * dx + dy * dy);
+                if (distM < CONFIG.mouseRadius && distM > 0) {
+                    const force = (CONFIG.mouseRadius - distM) / CONFIG.mouseRadius;
+                    p.vx += (dx / distM) * force * 0.04;
+                    p.vy += (dy / distM) * force * 0.04;
+
+                    // Draw direct laser connection from particle to cursor
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(mouse.x, mouse.y);
+                    ctx.strokeStyle = `rgba(56, 189, 248, ${force * 0.45})`;
+                    ctx.lineWidth = 1.2;
+                    ctx.stroke();
+                }
+            }
+
+            p.vx *= 0.992;
+            p.vy *= 0.992;
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // Wrap edges
+            if (p.x < -20) p.x = W + 20;
+            if (p.x > W + 20) p.x = -20;
+            if (p.y < -20) p.y = H + 20;
+            if (p.y > H + 20) p.y = -20;
+
+            // Pulse animation
+            p.pulse += p.pulseSpeed;
+            const alpha = 0.6 + 0.35 * Math.sin(p.pulse);
+            const radius = p.baseR + 0.8 * Math.sin(p.pulse * 0.7);
+
+            // Draw glowing node
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${alpha})`;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, 0.7)`;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // Draw constellation lines
+            for (let j = i + 1; j < particles.length; j++) {
+                const q = particles[j];
+                const ex = p.x - q.x;
+                const ey = p.y - q.y;
+                const dist = Math.sqrt(ex * ex + ey * ey);
+
+                if (dist < CONFIG.maxDist) {
+                    const lineAlpha = (1 - dist / CONFIG.maxDist) * 0.38;
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(q.x, q.y);
+                    ctx.strokeStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${lineAlpha})`;
+                    ctx.lineWidth = 0.9;
+                    ctx.stroke();
+                }
             }
         }
-        type();
+
+        requestAnimationFrame(draw);
+    }
+
+    requestAnimationFrame(draw);
+}
+
+// ============================================================
+// 🌟 Smooth Phrase Rotator (Cross-Fade Transitions)
+// ============================================================
+let phraseRotatorInterval;
+
+function startPhraseRotator(element, textOrArray) {
+    if (phraseRotatorInterval) clearInterval(phraseRotatorInterval);
+
+    element.classList.remove('typewriter-cursor');
+
+    if (typeof textOrArray === 'string') {
+        element.textContent = textOrArray;
         return;
     }
 
-    if (Array.isArray(textOrArray)) {
-        let arrayIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
+    if (Array.isArray(textOrArray) && textOrArray.length > 0) {
+        let index = 0;
+        element.textContent = textOrArray[0];
 
-        function typeLoop() {
-            const currentFullText = textOrArray[arrayIndex];
+        if (textOrArray.length === 1) return;
 
-            if (isDeleting) {
-                element.textContent = currentFullText.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                element.textContent = currentFullText.substring(0, charIndex + 1);
-                charIndex++;
-            }
+        phraseRotatorInterval = setInterval(() => {
+            element.classList.add('fade-out');
 
-            let typeSpeed = isDeleting ? 50 : 100;
+            setTimeout(() => {
+                index = (index + 1) % textOrArray.length;
+                element.textContent = textOrArray[index];
+                element.classList.remove('fade-out');
+                element.classList.add('fade-in');
 
-            if (!isDeleting && charIndex === currentFullText.length) {
-                typeSpeed = 2000;
-                isDeleting = true;
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                arrayIndex = (arrayIndex + 1) % textOrArray.length;
-                typeSpeed = 500;
-            }
-
-            typewriterTimeout = setTimeout(typeLoop, typeSpeed);
-        }
-        typeLoop();
+                setTimeout(() => {
+                    element.classList.remove('fade-in');
+                }, 450);
+            }, 400);
+        }, 3600);
     }
 }
 
@@ -676,7 +770,7 @@ function startCodeTypewriter() {
         { text: 'async', class: 'keyword' },
         { text: ' (' },
         { text: 'data', class: 'param' },
-        { text: ') => {\n    ' },
+        { text: ') => {\r\n    ' },
         { text: 'const', class: 'keyword' },
         { text: ' ' },
         { text: 'result', class: 'variable' },
@@ -686,13 +780,13 @@ function startCodeTypewriter() {
         { text: 'processAI', class: 'function' },
         { text: '(' },
         { text: 'data', class: 'param' },
-        { text: ');\n    ' },
+        { text: ');\r\n    ' },
         { text: 'return', class: 'keyword' },
         { text: ' ' },
         { text: 'result', class: 'variable' },
         { text: '.' },
         { text: 'insights', class: 'property' },
-        { text: ';\n};' }
+        { text: ';\r\n};' }
     ];
 
     let tokenIndex = 0;
@@ -770,11 +864,12 @@ function startCodeTypewriter() {
 }
 
 function getEcommerceTemplate(name) {
+    const safeName = escapeHTML(name);
     const t = translations[currentLang].aiTool.templates.ecommerce;
     return `
         <div class="preview-site" style="background:#f8f9fa;">
             <nav class="preview-nav" style="border-bottom: 2px solid #000;">
-                <div style="font-weight:bold; font-size:1.2rem; letter-spacing:-1px;">🛍️ ${name.toUpperCase()}</div>
+                <div style="font-weight:bold; font-size:1.2rem; letter-spacing:-1px;">🛍️ ${safeName.toUpperCase()}</div>
                 <div style="display:flex; gap:15px; font-size:0.75rem;"><span>${t.nav[0]}</span><span>${t.nav[1]}</span><span>🛒 (0)</span></div>
             </nav>
             <div class="preview-hero" style="background: #000; color:white; padding:2rem 1rem;">
@@ -800,11 +895,12 @@ function getEcommerceTemplate(name) {
 }
 
 function getRestaurantTemplate(name) {
+    const safeName = escapeHTML(name);
     const t = translations[currentLang].aiTool.templates.restaurant;
     return `
         <div class="preview-site" style="background:#fffaf5;">
             <nav class="preview-nav" style="background:transparent; position:absolute; width:100%; z-index:2; border:none;">
-                <div style="font-weight:bold; color:white; font-family:'Playfair Display', serif;">🍽️ ${name}</div>
+                <div style="font-weight:bold; color:white; font-family:'Playfair Display', serif;">🍽️ ${safeName}</div>
                 <div style="color:white; font-size:0.75rem;">${t.nav}</div>
             </nav>
             <div class="preview-hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80') center/cover; height:250px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white;">
@@ -835,12 +931,13 @@ function getRestaurantTemplate(name) {
 }
 
 function getPortfolioTemplate(name) {
+    const safeName = escapeHTML(name);
     const t = translations[currentLang].aiTool.templates.portfolio;
     return `
         <div class="preview-site" style="background:#fff;">
             <div style="padding:2rem; text-align:center;">
-                <div style="width:80px; height:80px; background:#000; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.5rem; font-weight:bold;">${name.charAt(0)}</div>
-                <h1 style="font-size:1.5rem; font-weight:900; letter-spacing:-1px; margin:0;">${name.toUpperCase()}</h1>
+                <div style="width:80px; height:80px; background:#000; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.5rem; font-weight:bold;">${safeName.charAt(0)}</div>
+                <h1 style="font-size:1.5rem; font-weight:900; letter-spacing:-1px; margin:0;">${safeName.toUpperCase()}</h1>
                 <p style="font-size:0.85rem; color:#666; margin-top:5px;">${t.role}</p>
                 <div style="display:flex; justify-content:center; gap:10px; margin-top:15px;">
                     <span style="background:#eee; padding:3px 10px; border-radius:20px; font-size:0.6rem; font-weight:bold;">REACT</span>
@@ -893,28 +990,11 @@ function createCodeSnippet() {
     }, duration * 1000);
 }
 
-// 3D Tilt Effect Logic
+// // 3D Tilt Effect Logic (Disabled: Cards are calm, stable and free from mouse movement)
 function init3DTilt() {
     const cards = document.querySelectorAll('.bento-card, .portfolio-card, .tech-card, .team-card');
-
     cards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-
-            const rotateX = (y - centerY) / 10;
-            const rotateY = (centerX - x) / 10;
-
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        });
-
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
-        });
+        card.style.transform = '';
     });
 }
 
@@ -922,60 +1002,121 @@ function init3DTilt() {
 // Moved init3DTilt to updateLanguage() directly
 
 // Final Initialization
-initCodeSnippets();
 init3DTilt();
-document.getElementById('ai-form').addEventListener('submit', (e) => {
-    // Re-bind Tilt after AI generation rendering
-    setTimeout(init3DTilt, 3500);
-});
 
-// Matrix Input Innovations
-function initMatrixInputs() {
-    const inputs = document.querySelectorAll('.matrix-input input, .matrix-input textarea');
+// Ambient Cyber Glow Tracking
+function initAmbientGlow() {
+    const glow = document.getElementById('ambient-glow');
+    if (!glow) return;
 
-    inputs.forEach(input => {
-        const originalPlaceholder = input.getAttribute('data-i18n-placeholder') || input.placeholder;
+    let targetX = window.innerWidth / 2;
+    let targetY = window.innerHeight / 2;
+    let currentX = targetX;
+    let currentY = targetY;
 
-        input.addEventListener('focus', async () => {
-            if (input.value === '') {
-                input.placeholder = '';
-                const text = translations[currentLang]?.application?.[originalPlaceholder.split('.').pop()] ||
-                    translations[currentLang]?.aiTool?.[originalPlaceholder.split('.').pop()] ||
-                    originalPlaceholder;
+    window.addEventListener('mousemove', (e) => {
+        targetX = e.clientX;
+        targetY = e.clientY;
+    }, { passive: true });
 
-                for (let i = 0; i <= text.length; i++) {
-                    if (document.activeElement !== input) break;
-                    input.placeholder = text.substring(0, i) + (i < text.length ? '▋' : '');
-                    await new Promise(r => setTimeout(r, 30));
-                }
-            }
-        });
+    function renderGlow() {
+        currentX += (targetX - currentX) * 0.08;
+        currentY += (targetY - currentY) * 0.08;
 
-        input.addEventListener('blur', () => {
-            input.placeholder = ' '; // Keep space for label float logic
+        glow.style.transform = `translate(${currentX}px, ${currentY}px) translate(-50%, -50%)`;
+        requestAnimationFrame(renderGlow);
+    }
+
+    renderGlow();
+}
+
+// --- Theme Switcher Logic ---
+const themes = ['default', 'cyber-violet', 'emerald-matrix'];
+const themeIcons = {
+    'default': '🔮',
+    'cyber-violet': '⚡',
+    'emerald-matrix': '🌿'
+};
+
+function initThemeSwitcher() {
+    const savedTheme = localStorage.getItem('miratech-theme') || 'default';
+    applyTheme(savedTheme);
+
+    const toggleDesktop = document.getElementById('theme-toggle');
+    const toggleMobile = document.getElementById('theme-toggle-mobile');
+
+    const cycleTheme = () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'default';
+        const nextIndex = (themes.indexOf(currentTheme) + 1) % themes.length;
+        const nextTheme = themes[nextIndex];
+        applyTheme(nextTheme);
+        localStorage.setItem('miratech-theme', nextTheme);
+    };
+
+    if (toggleDesktop) toggleDesktop.addEventListener('click', cycleTheme);
+    if (toggleMobile) toggleMobile.addEventListener('click', cycleTheme);
+}
+
+function applyTheme(themeName) {
+    if (themeName === 'default') {
+        document.documentElement.removeAttribute('data-theme');
+    } else {
+        document.documentElement.setAttribute('data-theme', themeName);
+    }
+
+    const icon = themeIcons[themeName] || '🔮';
+    const iconDesktop = document.getElementById('theme-icon');
+    const iconMobile = document.getElementById('theme-icon-mobile');
+    if (iconDesktop) iconDesktop.textContent = icon;
+    if (iconMobile) iconMobile.textContent = icon;
+}
+
+// --- Scroll Progress Bar ---
+function initScrollProgress() {
+    const bar = document.getElementById('scroll-progress-bar');
+    if (!bar) return;
+
+    window.addEventListener('scroll', () => {
+        const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+        bar.style.width = scrolled + '%';
+    }, { passive: true });
+}
+
+// --- Portfolio Category Tabs ---
+function initPortfolioFilter() {
+    const tabs = document.querySelectorAll('.portfolio-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const filter = tab.getAttribute('data-filter') || 'all';
+            renderPortfolio(filter);
+            init3DTilt();
         });
     });
 }
 
-// Application Form Logic
-document.addEventListener('DOMContentLoaded', () => {
-    initMatrixInputs();
-    const form = document.querySelector('#application-form');
-    const status = document.querySelector('#form-status');
-    const submitBtn = document.querySelector('#submit-btn');
+// --- Interactive Code Runner ---
+function initCodeRunner() {
+    const btn = document.getElementById('run-code-btn');
+    const terminal = document.getElementById('editor-terminal');
+    if (!btn || !terminal) return;
 
-    if (form) {
-        form.addEventListener('submit', (e) => {
-            const t = translations[currentLang].application;
+    btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        terminal.style.display = 'flex';
+        terminal.innerHTML = '<div class="term-line">> Compiling app.js & executing AI pipeline...</div>';
 
-            // Show sending feedback
-            submitBtn.disabled = true;
-            submitBtn.classList.add('generating');
-            status.textContent = t.statusSending;
-            status.className = 'form-status';
+        await new Promise(r => setTimeout(r, 600));
+        terminal.innerHTML += '<div class="term-line">> Connecting to MiraTech Neural Cloud...</div>';
 
-            // Form will submit naturally to FormSubmit.co
-            // FormSubmit will handle the redirect and email delivery
-        });
-    }
-});
+        await new Promise(r => setTimeout(r, 600));
+        terminal.innerHTML += '<div class="term-line success">> [SUCCESS] Pipeline 100% | Latency: 32ms | Insights: Ready!</div>';
+
+        btn.disabled = false;
+        btn.style.opacity = '1';
+    });
+}
